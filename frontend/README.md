@@ -5,7 +5,8 @@ React/Vite interface for workspace management, document upload, cited research c
 ## Run Locally on Windows PowerShell
 
 ```powershell
-cd C:\Users\Abhinav\Downloads\FinSightAI_Project_Skeleton\FinSightAI_Project_Skeleton\frontend
+# Navigate to the frontend directory from the project root
+cd frontend
 npm install
 npm run dev
 ```

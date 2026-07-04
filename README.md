@@ -21,7 +21,9 @@ It does **not** fully meet the complete vision yet. The remaining production gap
 Prerequisites: Docker Desktop, free ports `27017`, `8000`, and `5173`.
 
 ```powershell
-cd C:\Users\Abhinav\Downloads\FinSightAI_Project_Skeleton\FinSightAI_Project_Skeleton
+# Navigate to the project root directory
+cd path/to/FinSightAI_Project_Skeleton
+
 copy .env.example .env
 docker compose up --build
 ```
@@ -43,7 +45,8 @@ docker run --name finsight-mongo -p 27017:27017 -d mongo:7
 Start backend:
 
 ```powershell
-cd C:\Users\Abhinav\Downloads\FinSightAI_Project_Skeleton\FinSightAI_Project_Skeleton\backend
+# From the project root, navigate to the backend directory
+cd backend
 python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
 .\.venv\Scripts\uvicorn.exe app.main:app --reload --host 0.0.0.0 --port 8000
@@ -52,7 +55,8 @@ python -m venv .venv
 Start frontend:
 
 ```powershell
-cd C:\Users\Abhinav\Downloads\FinSightAI_Project_Skeleton\FinSightAI_Project_Skeleton\frontend
+# From the project root, navigate to the frontend directory
+cd frontend
 npm install
 npm run dev
 ```
@@ -87,7 +91,7 @@ If the frontend says `API offline`, confirm the backend is running at http://loc
 Install optional LangChain/data-science packages only when extending the deterministic MVP into the fuller AI architecture:
 
 ```powershell
-cd C:\Users\Abhinav\Downloads\FinSightAI_Project_Skeleton\FinSightAI_Project_Skeleton\backend
+cd backend
 .\.venv\Scripts\python.exe -m pip install -r requirements-ai.txt
 ```
 

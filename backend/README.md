@@ -11,7 +11,8 @@ FastAPI backend for PDF upload, parsing, chunking, deterministic embeddings, met
 ## Run Locally on Windows PowerShell
 
 ```powershell
-cd C:\Users\Abhinav\Downloads\FinSightAI_Project_Skeleton\FinSightAI_Project_Skeleton\backend
+# Navigate to the backend directory from the project root
+cd backend
 python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install --upgrade pip
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
