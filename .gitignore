@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.env
+.pytest_cache/
+
+# Node
+node_modules/
+dist/
+.env.local
+
+# Storage
+backend/storage/raw/*
+backend/storage/parsed/*
+backend/storage/reports/*
+!backend/storage/raw/.gitkeep
+!backend/storage/parsed/.gitkeep
+!backend/storage/reports/.gitkeep
+
+# OS
+.DS_Store

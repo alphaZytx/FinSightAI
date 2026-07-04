@@ -1,0 +1,5 @@
+DOCUMENT_UPLOADED = "document_uploaded"
+DOCUMENT_INDEXED = "document_indexed"
+METRICS_EXTRACTED = "metrics_extracted"
+RED_FLAGS_DETECTED = "red_flags_detected"
+REPORT_GENERATED = "report_generated"
