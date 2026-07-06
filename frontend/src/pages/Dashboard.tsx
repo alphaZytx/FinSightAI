@@ -1,101 +1,38 @@
-import { FormEvent, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { FolderPlus, RefreshCw, UploadCloud } from 'lucide-react';
+﻿import { Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { ArrowRight, BarChart3, FileText, GitCompare, ShieldAlert, UploadCloud } from 'lucide-react';
 import PageHeader from '../components/layout/PageHeader';
-import { createWorkspace, listWorkspaces } from '../api/workspaces';
+import WorkspaceInsights from '../components/analysis/WorkspaceInsights';
+import { getWorkspaceAnalysis } from '../api/workspaces';
 import { useWorkspaceStore } from '../store/workspaceStore';
 
 export default function Dashboard() {
-  const queryClient = useQueryClient();
-  const { activeWorkspaceId, setActiveWorkspaceId } = useWorkspaceStore();
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const workspaces = useQuery({ queryKey: ['workspaces'], queryFn: listWorkspaces });
-  const create = useMutation({
-    mutationFn: createWorkspace,
-    onSuccess: (workspace) => {
-      setName('');
-      setDescription('');
-      setActiveWorkspaceId(workspace._id);
-      queryClient.invalidateQueries({ queryKey: ['workspaces'] });
-    },
+  const activeWorkspaceId = useWorkspaceStore((state) => state.activeWorkspaceId);
+  const analysis = useQuery({
+    queryKey: ['research-analysis', activeWorkspaceId],
+    queryFn: () => getWorkspaceAnalysis(activeWorkspaceId),
+    enabled: Boolean(activeWorkspaceId),
   });
-
-  function submit(event: FormEvent) {
-    event.preventDefault();
-    if (!name.trim()) return;
-    create.mutate({ name: name.trim(), description: description.trim() || undefined });
-  }
 
   return (
     <>
-      <PageHeader title="FinSightAI Dashboard" subtitle="Workspace control for document ingestion, cited research, comparison, and reports." />
+      <PageHeader title="Financial Research" subtitle="Upload filings, review source-backed evidence, compare company performance, and generate an analyst report." />
       <section className="summary-strip">
-        <article className="summary-tile">
-          <span>Active workspace</span>
-          <strong>{activeWorkspaceId || 'None selected'}</strong>
-        </article>
-        <article className="summary-tile">
-          <span>Total workspaces</span>
-          <strong>{workspaces.data?.length ?? 0}</strong>
-        </article>
-        <article className="summary-tile">
-          <span>MVP mode</span>
-          <strong>Deterministic RAG</strong>
-        </article>
+        <article className="summary-tile"><FileText size={19} /><span>Indexed documents</span><strong>{analysis.data?.summary.indexed_document_count ?? 0}</strong></article>
+        <article className="summary-tile"><BarChart3 size={19} /><span>Key metrics</span><strong>{analysis.data?.summary.metric_count ?? 0}</strong></article>
+        <article className="summary-tile"><ShieldAlert size={19} /><span>Priority risks</span><strong>{analysis.data?.summary.high_priority_flag_count ?? 0}</strong></article>
+        <article className="summary-tile"><GitCompare size={19} /><span>Research mode</span><strong>Grounded analysis</strong></article>
       </section>
 
-      <section className="workspace-grid">
-        <form className="card form-card" onSubmit={submit}>
-          <h2>New workspace</h2>
-          <label>
-            Name
-            <input value={name} onChange={(event) => setName(event.target.value)} placeholder="Tesla FY2025 review" />
-          </label>
-          <label>
-            Description
-            <textarea value={description} onChange={(event) => setDescription(event.target.value)} placeholder="Annual report, peer review, and risk notes" />
-          </label>
-          <button type="submit" disabled={create.isPending}>
-            <FolderPlus size={18} />
-            {create.isPending ? 'Creating' : 'Create and select'}
-          </button>
-          {create.error && <p className="error-text">{create.error.message}</p>}
-        </form>
-
-        <section className="card list-card">
-          <div className="section-title-row">
-            <h2>Workspaces</h2>
-            <button type="button" className="icon-button" onClick={() => workspaces.refetch()} aria-label="Refresh workspaces">
-              <RefreshCw size={18} />
-            </button>
-          </div>
-          {workspaces.isLoading && <p className="muted">Loading workspaces...</p>}
-          {workspaces.error && <p className="error-text">{workspaces.error.message}</p>}
-          {workspaces.data?.length === 0 && <p className="muted">No workspaces yet.</p>}
-          <div className="stack">
-            {workspaces.data?.map((workspace) => (
-              <article className={workspace._id === activeWorkspaceId ? 'workspace-row selected' : 'workspace-row'} key={workspace._id}>
-                <div>
-                  <strong>{workspace.name}</strong>
-                  <span>{workspace._id}</span>
-                </div>
-                {workspace.description && <p>{workspace.description}</p>}
-                <div className="row-actions">
-                  <button type="button" className="secondary-button" onClick={() => setActiveWorkspaceId(workspace._id)}>
-                    Select
-                  </button>
-                  <Link className="secondary-link" to="/upload">
-                    <UploadCloud size={16} />
-                    Upload
-                  </Link>
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
+      <section className="research-actions" aria-label="Research actions">
+        <Link to="/upload"><UploadCloud size={19} /><span><strong>Upload filing</strong><small>Parse, extract, and scan risk indicators.</small></span><ArrowRight size={18} /></Link>
+        <Link to="/research"><BarChart3 size={19} /><span><strong>Ask research</strong><small>Get a source-cited answer from your documents.</small></span><ArrowRight size={18} /></Link>
+        <Link to="/reports"><FileText size={19} /><span><strong>Generate report</strong><small>Create a cited PDF research summary.</small></span><ArrowRight size={18} /></Link>
       </section>
+
+      {analysis.isLoading && <section className="analysis-loading"><span className="status-dot" />Loading document intelligence...</section>}
+      {analysis.error && <p className="error-text">Could not load the current analysis: {analysis.error.message}</p>}
+      {analysis.data && <WorkspaceInsights analysis={analysis.data} />}
     </>
   );
 }

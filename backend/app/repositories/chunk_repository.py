@@ -1,4 +1,4 @@
-from app.repositories.base import BaseRepository
+﻿from app.repositories.base import BaseRepository
 
 
 class ChunkRepository(BaseRepository):
@@ -9,6 +9,10 @@ class ChunkRepository(BaseRepository):
             return 0
         result = await self.collection.insert_many(chunks)
         return len(result.inserted_ids)
+
+    async def delete_by_document(self, document_id: str) -> int:
+        result = await self.collection.delete_many({"document_id": document_id})
+        return result.deleted_count
 
     async def find_by_workspace(self, workspace_id: str, limit: int = 100) -> list[dict]:
         items = []

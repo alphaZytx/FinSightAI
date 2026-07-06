@@ -1,23 +1,29 @@
 import logging
+from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from app.api.v1.router import api_router
 from app.core.config import settings
 
 logger = logging.getLogger("finsight-ai")
 
-app = FastAPI(title=settings.APP_NAME, version="0.1.0")
+app = FastAPI(title=settings.APP_NAME, version="0.2.0")
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.CORS_ORIGINS,
+    allow_origin_regex=r"^https?://(localhost|127\.0\.0\.1):\d+$",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+report_directory = Path(settings.REPORT_DIR)
+report_directory.mkdir(parents=True, exist_ok=True)
+app.mount("/reports-files", StaticFiles(directory=str(report_directory)), name="report-files")
 app.include_router(api_router, prefix="/api/v1")
 
 
@@ -30,9 +36,7 @@ async def on_startup():
         await create_indexes()
         logger.info("MongoDB indexes created successfully.")
     except Exception as exc:
-        logger.warning(
-            "Could not create MongoDB indexes (is the database reachable?): %s", exc
-        )
+        logger.warning("Could not create MongoDB indexes (is the database reachable?): %s", exc)
 
 
 @app.get("/health")

@@ -7,12 +7,12 @@ This codebase is now a runnable MVP of the product described below. It includes:
 - FastAPI backend with MongoDB repositories and API routes.
 - React/Vite frontend with workspace creation, upload, cited research, comparison, and report workflows.
 - PDF parsing with page-preserving chunks.
-- Deterministic local embeddings and cosine retrieval for keyless MVP use.
-- Rule-based financial metric extraction with source page/chunk evidence.
-- Rule-based red-flag detection with cited evidence.
-- PDF report generation with extracted metrics and risk indicators.
+- Hybrid local retrieval using lexical evidence plus deterministic hashed embeddings, with optional Groq answer synthesis.
+- Financial metric extraction that preserves reported units, derives supported ratios, and records page/chunk evidence.
+- Cited red-flag detection that combines filing language with debt, margin, liquidity, leverage, cash-flow, and loss checks.
+- Analyst-style PDF report generation with metrics, risk indicators, peer observations, and a source appendix.
 
-It does **not** fully meet the complete vision yet. The remaining production gaps are LangChain/LLM answer synthesis, richer table extraction, audited financial metric normalization across every filing format, chat history persistence, advanced evaluation, and production auth/security.
+It does **not** fully meet the complete vision yet. The remaining production gaps are audited table extraction across every filing format, independent financial-data validation, persistent chat history, advanced evaluation, production authentication/security, and a production vector database.
 
 ## Precise Run Instructions
 
@@ -24,7 +24,7 @@ Prerequisites: Docker Desktop, free ports `27017`, `8000`, and `5173`.
 # Navigate to the project root directory
 cd path/to/FinSightAI_Project_Skeleton
 
-copy .env.example .env
+Copy-Item .env.example .env
 docker compose up --build
 ```
 
@@ -48,7 +48,7 @@ Start backend:
 # From the project root, navigate to the backend directory
 cd backend
 python -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe -m pip install --timeout 120 --retries 10 -r requirements.txt
 .\.venv\Scripts\uvicorn.exe app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
@@ -57,9 +57,37 @@ Start frontend:
 ```powershell
 # From the project root, navigate to the frontend directory
 cd frontend
-npm install
+npm ci
 npm run dev
 ```
+
+### Configuration and Verification
+
+Keep secrets only in the root `.env` file. At minimum, set `MONGO_URI`; set `GROQ_API_KEY` to enable grounded Groq answer and explanation refinement. The app remains usable without a Groq key because extraction, red-flag checks, comparison, and retrieval have deterministic fallbacks.
+
+Use three PowerShell terminals for local development:
+
+```powershell
+# Terminal 1: MongoDB from the project root
+docker start finsight-mongo
+
+# Terminal 2: backend from the project root
+cd backend
+.\.venv\Scripts\uvicorn.exe app.main:app --reload --host 0.0.0.0 --port 8000
+
+# Terminal 3: frontend from the project root
+cd frontend
+npm run dev
+```
+
+Verify the stack before using the UI:
+
+```powershell
+Invoke-RestMethod http://localhost:8000/health
+Invoke-WebRequest http://localhost:8000/docs -UseBasicParsing
+```
+
+A healthy response reports `status: ok`; `mongo: connected` confirms saved workspaces and agent outputs can persist. The generated PDF links are served by the backend under `/reports-files/`.
 
 ### First Demo Workflow
 
@@ -67,7 +95,8 @@ npm run dev
 2. Upload a PDF and keep auto-ingestion enabled.
 3. Ask a research question using the active workspace.
 4. Run company comparison after uploading one or more company documents.
-5. Generate a report from the Reports page.
+5. Review the dashboard evidence table and risk watchlist.
+6. Generate and open the cited PDF report from the Reports page.
 
 
 ### Troubleshooting
@@ -170,10 +199,10 @@ FinSightAI solves this by combining **RAG, multi-agent AI, structured extraction
 
 A user should be able to upload company documents and ask:
 
-- “Summarize revenue, profit and margin trends for the last three years.”
-- “What are the major red flags in this annual report?”
-- “Compare Company A and Company B on revenue growth, debt, profitability and risks.”
-- “Generate a 5-page analyst-style report with citations.”
+- â€œSummarize revenue, profit and margin trends for the last three years.â€
+- â€œWhat are the major red flags in this annual report?â€
+- â€œCompare Company A and Company B on revenue growth, debt, profitability and risks.â€
+- â€œGenerate a 5-page analyst-style report with citations.â€
 
 The system should answer with:
 
@@ -407,7 +436,7 @@ Answer policy:
 - do not invent numbers;
 - do not assume missing fiscal periods;
 - cite each factual claim;
-- answer “not found in uploaded documents” when evidence is missing.
+- answer â€œnot found in uploaded documentsâ€ when evidence is missing.
 
 ### 7.6 Report Agent
 
@@ -427,140 +456,140 @@ Responsibilities:
 
 ```text
 finsight-ai/
-├── README.md
-├── .env.example
-├── .gitignore
-├── docker-compose.yml
-├── Makefile
-├── backend/
-│   ├── README.md
-│   ├── requirements.txt
-│   ├── pyproject.toml
-│   ├── app/
-│   │   ├── main.py
-│   │   ├── core/
-│   │   │   ├── config.py
-│   │   │   ├── logging.py
-│   │   │   └── errors.py
-│   │   ├── db/
-│   │   │   ├── mongo.py
-│   │   │   └── indexes.py
-│   │   ├── api/
-│   │   │   └── v1/
-│   │   │       ├── router.py
-│   │   │       └── routes/
-│   │   │           ├── workspaces.py
-│   │   │           ├── documents.py
-│   │   │           ├── agents.py
-│   │   │           ├── research.py
-│   │   │           ├── comparison.py
-│   │   │           └── reports.py
-│   │   ├── schemas/
-│   │   │   ├── workspace.py
-│   │   │   ├── document.py
-│   │   │   ├── chunk.py
-│   │   │   ├── metric.py
-│   │   │   ├── red_flag.py
-│   │   │   ├── research.py
-│   │   │   └── report.py
-│   │   ├── repositories/
-│   │   │   ├── base.py
-│   │   │   ├── workspace_repository.py
-│   │   │   ├── document_repository.py
-│   │   │   ├── chunk_repository.py
-│   │   │   ├── metric_repository.py
-│   │   │   └── report_repository.py
-│   │   ├── services/
-│   │   │   ├── document_service.py
-│   │   │   ├── parsing_service.py
-│   │   │   ├── chunking_service.py
-│   │   │   ├── embedding_service.py
-│   │   │   ├── retrieval_service.py
-│   │   │   ├── citation_service.py
-│   │   │   ├── pdf_report_service.py
-│   │   │   └── evaluation_service.py
-│   │   ├── agents/
-│   │   │   ├── base_agent.py
-│   │   │   ├── document_agent.py
-│   │   │   ├── extraction_agent.py
-│   │   │   ├── red_flag_agent.py
-│   │   │   ├── comparison_agent.py
-│   │   │   ├── research_agent.py
-│   │   │   └── report_agent.py
-│   │   ├── orchestration/
-│   │   │   ├── workflow.py
-│   │   │   ├── states.py
-│   │   │   └── events.py
-│   │   ├── prompts/
-│   │   │   ├── extraction_prompt.md
-│   │   │   ├── red_flag_prompt.md
-│   │   │   ├── research_prompt.md
-│   │   │   └── report_prompt.md
-│   │   ├── utils/
-│   │   │   ├── ids.py
-│   │   │   ├── files.py
-│   │   │   ├── finance_units.py
-│   │   │   └── text_cleaning.py
-│   │   └── tests/
-│   │       ├── test_chunking.py
-│   │       ├── test_citations.py
-│   │       ├── test_extraction_agent.py
-│   │       └── test_research_agent.py
-│   └── storage/
-│       ├── raw/
-│       ├── parsed/
-│       └── reports/
-├── frontend/
-│   ├── README.md
-│   ├── package.json
-│   ├── vite.config.ts
-│   ├── index.html
-│   └── src/
-│       ├── main.tsx
-│       ├── App.tsx
-│       ├── api/
-│       │   ├── client.ts
-│       │   ├── workspaces.ts
-│       │   ├── documents.ts
-│       │   ├── research.ts
-│       │   └── reports.ts
-│       ├── components/
-│       │   ├── layout/
-│       │   ├── upload/
-│       │   ├── chat/
-│       │   ├── citations/
-│       │   ├── metrics/
-│       │   ├── redflags/
-│       │   └── reports/
-│       ├── pages/
-│       │   ├── Dashboard.tsx
-│       │   ├── Workspace.tsx
-│       │   ├── DocumentUpload.tsx
-│       │   ├── ResearchChat.tsx
-│       │   ├── Comparison.tsx
-│       │   └── ReportBuilder.tsx
-│       ├── store/
-│       │   └── workspaceStore.ts
-│       ├── types/
-│       │   ├── document.ts
-│       │   ├── metric.ts
-│       │   ├── redFlag.ts
-│       │   └── report.ts
-│       └── styles/
-│           └── globals.css
-├── docs/
-│   ├── architecture.md
-│   ├── api_contract.md
-│   ├── data_model.md
-│   ├── agent_design.md
-│   ├── evaluation_plan.md
-│   └── demo_script.md
-├── scripts/
-│   ├── seed_demo_documents.py
-│   ├── reindex_workspace.py
-│   └── generate_sample_report.py
-└── sample_data/
-    └── README.md
+â”œâ”€â”€ README.md
+â”œâ”€â”€ .env.example
+â”œâ”€â”€ .gitignore
+â”œâ”€â”€ docker-compose.yml
+â”œâ”€â”€ Makefile
+â”œâ”€â”€ backend/
+â”‚   â”œâ”€â”€ README.md
+â”‚   â”œâ”€â”€ requirements.txt
+â”‚   â”œâ”€â”€ pyproject.toml
+â”‚   â”œâ”€â”€ app/
+â”‚   â”‚   â”œâ”€â”€ main.py
+â”‚   â”‚   â”œâ”€â”€ core/
+â”‚   â”‚   â”‚   â”œâ”€â”€ config.py
+â”‚   â”‚   â”‚   â”œâ”€â”€ logging.py
+â”‚   â”‚   â”‚   â””â”€â”€ errors.py
+â”‚   â”‚   â”œâ”€â”€ db/
+â”‚   â”‚   â”‚   â”œâ”€â”€ mongo.py
+â”‚   â”‚   â”‚   â””â”€â”€ indexes.py
+â”‚   â”‚   â”œâ”€â”€ api/
+â”‚   â”‚   â”‚   â””â”€â”€ v1/
+â”‚   â”‚   â”‚       â”œâ”€â”€ router.py
+â”‚   â”‚   â”‚       â””â”€â”€ routes/
+â”‚   â”‚   â”‚           â”œâ”€â”€ workspaces.py
+â”‚   â”‚   â”‚           â”œâ”€â”€ documents.py
+â”‚   â”‚   â”‚           â”œâ”€â”€ agents.py
+â”‚   â”‚   â”‚           â”œâ”€â”€ research.py
+â”‚   â”‚   â”‚           â”œâ”€â”€ comparison.py
+â”‚   â”‚   â”‚           â””â”€â”€ reports.py
+â”‚   â”‚   â”œâ”€â”€ schemas/
+â”‚   â”‚   â”‚   â”œâ”€â”€ workspace.py
+â”‚   â”‚   â”‚   â”œâ”€â”€ document.py
+â”‚   â”‚   â”‚   â”œâ”€â”€ chunk.py
+â”‚   â”‚   â”‚   â”œâ”€â”€ metric.py
+â”‚   â”‚   â”‚   â”œâ”€â”€ red_flag.py
+â”‚   â”‚   â”‚   â”œâ”€â”€ research.py
+â”‚   â”‚   â”‚   â””â”€â”€ report.py
+â”‚   â”‚   â”œâ”€â”€ repositories/
+â”‚   â”‚   â”‚   â”œâ”€â”€ base.py
+â”‚   â”‚   â”‚   â”œâ”€â”€ workspace_repository.py
+â”‚   â”‚   â”‚   â”œâ”€â”€ document_repository.py
+â”‚   â”‚   â”‚   â”œâ”€â”€ chunk_repository.py
+â”‚   â”‚   â”‚   â”œâ”€â”€ metric_repository.py
+â”‚   â”‚   â”‚   â””â”€â”€ report_repository.py
+â”‚   â”‚   â”œâ”€â”€ services/
+â”‚   â”‚   â”‚   â”œâ”€â”€ document_service.py
+â”‚   â”‚   â”‚   â”œâ”€â”€ parsing_service.py
+â”‚   â”‚   â”‚   â”œâ”€â”€ chunking_service.py
+â”‚   â”‚   â”‚   â”œâ”€â”€ embedding_service.py
+â”‚   â”‚   â”‚   â”œâ”€â”€ retrieval_service.py
+â”‚   â”‚   â”‚   â”œâ”€â”€ citation_service.py
+â”‚   â”‚   â”‚   â”œâ”€â”€ pdf_report_service.py
+â”‚   â”‚   â”‚   â””â”€â”€ evaluation_service.py
+â”‚   â”‚   â”œâ”€â”€ agents/
+â”‚   â”‚   â”‚   â”œâ”€â”€ base_agent.py
+â”‚   â”‚   â”‚   â”œâ”€â”€ document_agent.py
+â”‚   â”‚   â”‚   â”œâ”€â”€ extraction_agent.py
+â”‚   â”‚   â”‚   â”œâ”€â”€ red_flag_agent.py
+â”‚   â”‚   â”‚   â”œâ”€â”€ comparison_agent.py
+â”‚   â”‚   â”‚   â”œâ”€â”€ research_agent.py
+â”‚   â”‚   â”‚   â””â”€â”€ report_agent.py
+â”‚   â”‚   â”œâ”€â”€ orchestration/
+â”‚   â”‚   â”‚   â”œâ”€â”€ workflow.py
+â”‚   â”‚   â”‚   â”œâ”€â”€ states.py
+â”‚   â”‚   â”‚   â””â”€â”€ events.py
+â”‚   â”‚   â”œâ”€â”€ prompts/
+â”‚   â”‚   â”‚   â”œâ”€â”€ extraction_prompt.md
+â”‚   â”‚   â”‚   â”œâ”€â”€ red_flag_prompt.md
+â”‚   â”‚   â”‚   â”œâ”€â”€ research_prompt.md
+â”‚   â”‚   â”‚   â””â”€â”€ report_prompt.md
+â”‚   â”‚   â”œâ”€â”€ utils/
+â”‚   â”‚   â”‚   â”œâ”€â”€ ids.py
+â”‚   â”‚   â”‚   â”œâ”€â”€ files.py
+â”‚   â”‚   â”‚   â”œâ”€â”€ finance_units.py
+â”‚   â”‚   â”‚   â””â”€â”€ text_cleaning.py
+â”‚   â”‚   â””â”€â”€ tests/
+â”‚   â”‚       â”œâ”€â”€ test_chunking.py
+â”‚   â”‚       â”œâ”€â”€ test_citations.py
+â”‚   â”‚       â”œâ”€â”€ test_extraction_agent.py
+â”‚   â”‚       â””â”€â”€ test_research_agent.py
+â”‚   â””â”€â”€ storage/
+â”‚       â”œâ”€â”€ raw/
+â”‚       â”œâ”€â”€ parsed/
+â”‚       â””â”€â”€ reports/
+â”œâ”€â”€ frontend/
+â”‚   â”œâ”€â”€ README.md
+â”‚   â”œâ”€â”€ package.json
+â”‚   â”œâ”€â”€ vite.config.ts
+â”‚   â”œâ”€â”€ index.html
+â”‚   â””â”€â”€ src/
+â”‚       â”œâ”€â”€ main.tsx
+â”‚       â”œâ”€â”€ App.tsx
+â”‚       â”œâ”€â”€ api/
+â”‚       â”‚   â”œâ”€â”€ client.ts
+â”‚       â”‚   â”œâ”€â”€ workspaces.ts
+â”‚       â”‚   â”œâ”€â”€ documents.ts
+â”‚       â”‚   â”œâ”€â”€ research.ts
+â”‚       â”‚   â””â”€â”€ reports.ts
+â”‚       â”œâ”€â”€ components/
+â”‚       â”‚   â”œâ”€â”€ layout/
+â”‚       â”‚   â”œâ”€â”€ upload/
+â”‚       â”‚   â”œâ”€â”€ chat/
+â”‚       â”‚   â”œâ”€â”€ citations/
+â”‚       â”‚   â”œâ”€â”€ metrics/
+â”‚       â”‚   â”œâ”€â”€ redflags/
+â”‚       â”‚   â””â”€â”€ reports/
+â”‚       â”œâ”€â”€ pages/
+â”‚       â”‚   â”œâ”€â”€ Dashboard.tsx
+â”‚       â”‚   â”œâ”€â”€ Workspace.tsx
+â”‚       â”‚   â”œâ”€â”€ DocumentUpload.tsx
+â”‚       â”‚   â”œâ”€â”€ ResearchChat.tsx
+â”‚       â”‚   â”œâ”€â”€ Comparison.tsx
+â”‚       â”‚   â””â”€â”€ ReportBuilder.tsx
+â”‚       â”œâ”€â”€ store/
+â”‚       â”‚   â””â”€â”€ workspaceStore.ts
+â”‚       â”œâ”€â”€ types/
+â”‚       â”‚   â”œâ”€â”€ document.ts
+â”‚       â”‚   â”œâ”€â”€ metric.ts
+â”‚       â”‚   â”œâ”€â”€ redFlag.ts
+â”‚       â”‚   â””â”€â”€ report.ts
+â”‚       â””â”€â”€ styles/
+â”‚           â””â”€â”€ globals.css
+â”œâ”€â”€ docs/
+â”‚   â”œâ”€â”€ architecture.md
+â”‚   â”œâ”€â”€ api_contract.md
+â”‚   â”œâ”€â”€ data_model.md
+â”‚   â”œâ”€â”€ agent_design.md
+â”‚   â”œâ”€â”€ evaluation_plan.md
+â”‚   â””â”€â”€ demo_script.md
+â”œâ”€â”€ scripts/
+â”‚   â”œâ”€â”€ seed_demo_documents.py
+â”‚   â”œâ”€â”€ reindex_workspace.py
+â”‚   â””â”€â”€ generate_sample_report.py
+â””â”€â”€ sample_data/
+    â””â”€â”€ README.md
 ```
 
 ---
@@ -592,17 +621,17 @@ The orchestrator controls the workflow:
 
 ```text
 Upload Document
-    ↓
+    â†“
 Document Agent
-    ↓
+    â†“
 Extraction Agent
-    ↓
+    â†“
 Red Flag Agent
-    ↓
+    â†“
 Comparison Agent, if multiple companies exist
-    ↓
+    â†“
 Research Agent, on user query
-    ↓
+    â†“
 Report Agent, on report request
 ```
 
@@ -1377,7 +1406,7 @@ uvicorn app.main:app --reload --port 8000
 
 ```bash
 cd frontend
-npm install
+npm ci
 npm run dev
 ```
 
@@ -1394,12 +1423,12 @@ docker compose up --build
 Use this exact flow for presentation:
 
 1. Open dashboard.
-2. Create workspace: “FY2024 IT Services Analysis”.
+2. Create workspace: â€œFY2024 IT Services Analysisâ€.
 3. Upload 2-3 company annual reports.
 4. Show ingestion status changing from uploaded to indexed.
 5. Open extracted metrics table.
 6. Show red flag cards with severity and citations.
-7. Ask Research Agent: “What are the key profitability risks?”
+7. Ask Research Agent: â€œWhat are the key profitability risks?â€
 8. Show cited answer and source page references.
 9. Open Comparison page and compare two companies.
 10. Generate analyst-style PDF report.

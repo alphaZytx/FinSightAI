@@ -1,8 +1,23 @@
-import { API_BASE_URL } from './client';
+﻿import { API_BASE_URL } from './client';
+import type { AnalysisMetric, AnalysisRedFlag } from '../types/analysis';
+
+export type AgentStep<TOutput = Record<string, unknown>> = {
+  agent_name: string;
+  status: string;
+  output: TOutput;
+  errors?: string[];
+};
+
+export type IngestionResults = {
+  document?: AgentStep<{ workspace_id?: string; pages_processed?: number; chunks_created?: number }>;
+  extraction?: AgentStep<{ metrics?: AnalysisMetric[]; metrics_saved?: number; derived_ratio_count?: number; coverage?: Record<string, number> }>;
+  red_flags?: AgentStep<{ red_flags?: AnalysisRedFlag[]; red_flags_saved?: number; severity_counts?: Record<string, number> }>;
+  comparison?: AgentStep<{ coverage?: { company_count?: number; comparable_metric_rows?: number } }>;
+};
 
 export type IngestResponse = {
   document_id: string;
-  results: Record<string, unknown>;
+  results: IngestionResults;
 };
 
 export type DocumentUploadResponse = {

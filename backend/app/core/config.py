@@ -1,12 +1,9 @@
-import json
+﻿import json
 from pathlib import Path
 
-from pydantic import field_validator
 from pydantic_settings import BaseSettings
 
 
-# Resolve the .env path relative to this file:
-# config.py → core/ → app/ → backend/ → project root
 _ENV_FILE = Path(__file__).resolve().parent.parent.parent.parent / ".env"
 
 
@@ -24,8 +21,7 @@ class Settings(BaseSettings):
     EMBEDDING_MODEL: str = "text-embedding-model"
     UPLOAD_DIR: str = "storage/raw"
     REPORT_DIR: str = "storage/reports"
-    # Store as a plain string to avoid pydantic-settings parsing issues
-    CORS_ORIGINS_STR: str = "http://localhost:5173,http://localhost:5174"
+    CORS_ORIGINS_STR: str = "http://localhost:5173,http://localhost:5174,http://localhost:5175,http://127.0.0.1:5173,http://127.0.0.1:5174,http://127.0.0.1:5175"
 
     @property
     def CORS_ORIGINS(self) -> list[str]:
