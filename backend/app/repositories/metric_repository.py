@@ -15,8 +15,13 @@ class MetricRepository(BaseRepository):
         return result.deleted_count
 
     async def find_by_document(self, document_id: str, limit: int = 500) -> list[dict]:
+        return await self.find_by_document_ids([document_id], limit=limit)
+
+    async def find_by_document_ids(self, document_ids: list[str], limit: int = 2000) -> list[dict]:
+        if not document_ids:
+            return []
         items = []
-        cursor = self.collection.find({"document_id": document_id}).sort([("metric_name", 1), ("period", 1)]).limit(limit)
+        cursor = self.collection.find({"document_id": {"$in": document_ids}}).sort([("company_name", 1), ("metric_name", 1), ("period", 1)]).limit(limit)
         async for item in cursor:
             items.append(item)
         return items

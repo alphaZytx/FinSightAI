@@ -40,7 +40,7 @@ METRIC_ALIASES = {
 }
 
 VALUE_PATTERN = re.compile(
-    r"(?<![A-Za-z])(?P<currency>[$â‚¹â‚¬Â£]|USD|INR|EUR|GBP)?\s*"
+    r"(?<![A-Za-z0-9])(?P<currency>[$Ã¢â€šÂ¹Ã¢â€šÂ¬Ã‚Â£]|USD|INR|EUR|GBP)?\s*"
     r"(?P<value>\(?-?\d[\d,]*(?:\.\d+)?\)?)(?:\s*"
     r"(?P<unit>%|percent|thousand|million|billion|crore|lakh|lakhs|m|bn))?",
     re.IGNORECASE,

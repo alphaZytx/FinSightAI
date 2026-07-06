@@ -1,6 +1,7 @@
 ﻿from collections import defaultdict
 
 from app.agents.base_agent import AgentResult, BaseAgent
+from app.repositories.document_repository import DocumentRepository
 from app.repositories.metric_repository import MetricRepository
 from app.repositories.red_flag_repository import RedFlagRepository
 
@@ -11,9 +12,10 @@ LOWER_IS_BETTER = {"total_debt", "debt_to_equity", "debt_to_ebitda"}
 
 class ComparisonAgent(BaseAgent):
     name = "ComparisonAgent"
-    description = "Benchmarks citable, normalized metrics across workspace companies."
+    description = "Benchmarks selected, citable financial reports across distinct companies."
 
     def __init__(self) -> None:
+        self.documents = DocumentRepository()
         self.metrics = MetricRepository()
         self.red_flags = RedFlagRepository()
 
@@ -22,28 +24,89 @@ class ComparisonAgent(BaseAgent):
         if not workspace_id:
             return AgentResult(agent_name=self.name, status="failed", errors=["workspace_id is required"])
 
-        metrics = await self.metrics.find_by_workspace(workspace_id)
-        red_flags = await self.red_flags.find_by_workspace(workspace_id)
-        rows = self._metric_rows(metrics)
-        risk_summary = self._risk_summary(red_flags)
-        companies = sorted({metric.get("company_name", "Unknown company") for metric in metrics} | {flag.get("company_name", "Unknown company") for flag in red_flags})
-        comparable_rows = [row for row in rows if len(row["companies"]) >= 2]
+        available_documents = [
+            document for document in await self.documents.find_by_workspace(workspace_id)
+            if document.get("status") == "indexed"
+        ]
+        selected_document_ids = state.get("document_ids")
+        selected_documents = self._select_documents(available_documents, selected_document_ids)
+        eligibility = self._eligibility(available_documents, selected_documents)
+
+        if not eligibility["ready"]:
+            return AgentResult(
+                agent_name=self.name,
+                status="needs_more_data",
+                output={
+                    "comparison": [],
+                    "benchmark_insights": [],
+                    "risk_summary": [],
+                    "coverage": self._coverage(selected_documents, [], [], len(available_documents)),
+                    "eligibility": eligibility,
+                },
+            )
+
+        document_ids = [document["_id"] for document in selected_documents]
+        metrics = await self.metrics.find_by_document_ids(document_ids)
+        red_flags = await self.red_flags.find_by_document_ids(document_ids)
+        all_rows = self._metric_rows(metrics)
+        comparable_rows = [row for row in all_rows if len(row["companies"]) >= 2]
+        coverage = self._coverage(selected_documents, all_rows, red_flags, len(available_documents))
+        coverage["comparable_metric_rows"] = len(comparable_rows)
+        coverage["unmatched_metric_rows"] = len(all_rows) - len(comparable_rows)
+
+        eligibility["message"] = (
+            "Ready to compare the selected companies."
+            if comparable_rows
+            else "The selected filings are from distinct companies, but they do not yet share extracted metrics for the same fiscal period."
+        )
         return AgentResult(
             agent_name=self.name,
             status="success",
             output={
-                "comparison": rows,
+                "comparison": comparable_rows,
                 "benchmark_insights": self._benchmark_insights(comparable_rows),
-                "risk_summary": risk_summary,
-                "coverage": {
-                    "company_count": len(companies),
-                    "companies": companies,
-                    "metric_rows": len(rows),
-                    "comparable_metric_rows": len(comparable_rows),
-                    "red_flags_considered": len(red_flags),
-                },
+                "risk_summary": self._risk_summary(red_flags),
+                "coverage": coverage,
+                "eligibility": eligibility,
             },
         )
+
+    def _select_documents(self, available_documents: list[dict], document_ids: object) -> list[dict]:
+        if document_ids is None:
+            return available_documents
+        if not isinstance(document_ids, list):
+            return []
+        selected = {str(document_id) for document_id in document_ids}
+        return [document for document in available_documents if document.get("_id") in selected]
+
+    def _eligibility(self, available_documents: list[dict], selected_documents: list[dict]) -> dict:
+        companies = sorted({document.get("company_name", "Unknown company") for document in selected_documents})
+        if not selected_documents:
+            message = "Select at least one indexed filing for each company you want to compare."
+        elif len(companies) < 2:
+            message = "Upload and select an indexed filing for a second company before running a comparison."
+        else:
+            message = "Select reports from at least two companies to run the comparison."
+        return {
+            "ready": len(companies) >= 2,
+            "message": message,
+            "selected_document_ids": [document["_id"] for document in selected_documents],
+            "selected_companies": companies,
+            "available_document_count": len(available_documents),
+            "selected_document_count": len(selected_documents),
+        }
+
+    def _coverage(self, selected_documents: list[dict], metric_rows: list[dict], red_flags: list[dict], available_document_count: int) -> dict:
+        companies = sorted({document.get("company_name", "Unknown company") for document in selected_documents})
+        return {
+            "company_count": len(companies),
+            "companies": companies,
+            "selected_document_count": len(selected_documents),
+            "available_document_count": available_document_count,
+            "metric_rows": len(metric_rows),
+            "comparable_metric_rows": sum(len(row.get("companies", {})) >= 2 for row in metric_rows),
+            "red_flags_considered": len(red_flags),
+        }
 
     def _metric_rows(self, metrics: list[dict]) -> list[dict]:
         grouped: dict[tuple[str, str | None], dict] = {}

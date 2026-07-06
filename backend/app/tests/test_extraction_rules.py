@@ -1,11 +1,11 @@
-﻿from app.agents.extraction_agent import ExtractionAgent
+from app.agents.extraction_agent import ExtractionAgent
 
 
 def test_extraction_skips_fiscal_year_when_selecting_value():
     agent = ExtractionAgent()
     value = agent._best_value_match("Total revenue FY2024 was 1,250 million.", "total revenue")
 
-    assert value == (1250.0, 1_250_000.0, "million")
+    assert value == (1250.0, 1_250_000_000.0, "million")
 
 
 def test_extraction_derives_only_supported_ratios():
