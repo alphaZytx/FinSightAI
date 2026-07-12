@@ -1,4 +1,3 @@
-import math
 import re
 
 import numpy as np
@@ -16,7 +15,7 @@ class RetrievalService:
         self.chunk_repo = ChunkRepository()
         self.embedding_service = EmbeddingService()
 
-    async def retrieve(self, workspace_id: str, query: str, top_k: int = 8) -> list[dict]:
+    async def retrieve(self, workspace_id: str, query: str, top_k: int = 12) -> list[dict]:
         query_vec = np.array(self.embedding_service.embed_text(query))
         query_terms = self._terms(query)
         chunks = await self.chunk_repo.find_by_workspace(workspace_id, limit=2000)
@@ -25,9 +24,9 @@ class RetrievalService:
             text = chunk.get("text", "")
             lexical = self._lexical_score(query_terms, text)
             vector = self._vector_score(query_vec, chunk.get("embedding"))
-            # Lexical evidence dominates because it remains valid for documents
-            # indexed before the upgraded hashed-embedding implementation.
-            score = 0.80 * lexical + 0.20 * vector
+            # Balanced scoring: semantic matching is critical for financial queries
+            # where user wording may differ from document phrasing
+            score = 0.55 * lexical + 0.45 * vector
             if score > 0:
                 scored.append((score, lexical, vector, chunk))
         scored.sort(key=lambda item: (item[0], item[1]), reverse=True)
@@ -36,7 +35,7 @@ class RetrievalService:
             for score, lexical, _vector, chunk in scored[:top_k]
         ]
 
-    async def retrieve_many(self, workspace_id: str, queries: list[str], top_k: int = 8) -> list[dict]:
+    async def retrieve_many(self, workspace_id: str, queries: list[str], top_k: int = 12) -> list[dict]:
         merged: dict[str, dict] = {}
         for query in queries:
             for chunk in await self.retrieve(workspace_id, query, top_k=top_k):
@@ -52,10 +51,14 @@ class RetrievalService:
     def _lexical_score(self, query_terms: set[str], text: str) -> float:
         if not query_terms:
             return 0.0
+        text_lower = text.lower()
         text_terms = set(token.lower() for token in _TOKEN_PATTERN.findall(text))
         overlap = len(query_terms & text_terms) / len(query_terms)
-        phrase_bonus = 0.12 if len(query_terms) >= 2 and " ".join(sorted(query_terms)) in text.lower() else 0.0
-        return min(overlap + phrase_bonus, 1.0)
+        # Bonus for exact phrase matches
+        phrase_bonus = 0.12 if len(query_terms) >= 2 and " ".join(sorted(query_terms)) in text_lower else 0.0
+        # Bonus for financial number proximity — chunks with numbers near query terms are more valuable
+        number_bonus = 0.05 if overlap > 0.3 and re.search(r"\d[\d,.]*", text) else 0.0
+        return min(overlap + phrase_bonus + number_bonus, 1.0)
 
     def _vector_score(self, query_vec: np.ndarray, embedding: object) -> float:
         if not embedding:
