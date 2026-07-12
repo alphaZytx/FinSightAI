@@ -14,6 +14,10 @@ class ChunkRepository(BaseRepository):
         result = await self.collection.delete_many({"document_id": document_id})
         return result.deleted_count
 
+    async def delete_by_workspace(self, workspace_id: str) -> int:
+        result = await self.collection.delete_many({"workspace_id": workspace_id})
+        return result.deleted_count
+
     async def find_by_workspace(self, workspace_id: str, limit: int = 100) -> list[dict]:
         items = []
         async for item in self.collection.find({"workspace_id": workspace_id}).limit(limit):

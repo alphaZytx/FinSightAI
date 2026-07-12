@@ -14,6 +14,10 @@ class MetricRepository(BaseRepository):
         result = await self.collection.delete_many({"document_id": document_id})
         return result.deleted_count
 
+    async def delete_by_workspace(self, workspace_id: str) -> int:
+        result = await self.collection.delete_many({"workspace_id": workspace_id})
+        return result.deleted_count
+
     async def find_by_document(self, document_id: str, limit: int = 500) -> list[dict]:
         return await self.find_by_document_ids([document_id], limit=limit)
 

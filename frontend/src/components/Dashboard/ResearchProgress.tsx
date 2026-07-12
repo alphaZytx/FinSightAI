@@ -5,14 +5,17 @@ import { Card } from '../Common';
 
 interface ResearchProgressProps {
   steps?: ResearchStep[];
+  companyName?: string;
+  currentProgress?: number;
 }
 
-export default function ResearchProgress({ steps = mockResearchSteps }: ResearchProgressProps) {
+export default function ResearchProgress({ steps = mockResearchSteps, companyName = 'TechFlow Inc', currentProgress }: ResearchProgressProps) {
   const completedCount = steps.filter((s) => s.completed).length;
-  const progress = Math.round((completedCount / steps.length) * 100);
+  const calculatedProgress = Math.round((completedCount / steps.length) * 100);
+  const progress = currentProgress !== undefined ? currentProgress : calculatedProgress;
 
   return (
-    <Card title="Research Progress" subtitle={`TechFlow Inc — ${progress}% complete`}>
+    <Card title="Research Progress" subtitle={`${companyName} — ${progress}% complete`}>
       <div className="mb-4">
         <div className="flex items-center justify-between text-xs text-surface-400">
           <span>Overall progress</span>

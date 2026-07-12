@@ -14,6 +14,10 @@ class RedFlagRepository(BaseRepository):
         result = await self.collection.delete_many({"document_id": document_id})
         return result.deleted_count
 
+    async def delete_by_workspace(self, workspace_id: str) -> int:
+        result = await self.collection.delete_many({"workspace_id": workspace_id})
+        return result.deleted_count
+
     async def find_by_document_ids(self, document_ids: list[str], limit: int = 2000) -> list[dict]:
         if not document_ids:
             return []

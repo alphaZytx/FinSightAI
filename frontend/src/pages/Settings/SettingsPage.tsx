@@ -1,6 +1,10 @@
+import { Trash2 } from 'lucide-react';
 import { Card } from '../../components/Common';
+import { useClearWorkspaceData } from '../../hooks/useClearWorkspaceData';
 
 export default function SettingsPage() {
+  const { clearAll, clearing, error } = useClearWorkspaceData();
+
   return (
     <div className="space-y-6">
       <div>
@@ -38,6 +42,37 @@ export default function SettingsPage() {
             </label>
           ))}
         </div>
+      </Card>
+
+      <Card
+        title="Data Management"
+        subtitle="Remove all uploaded documents and analysis from this workspace"
+      >
+        <p className="mb-4 text-sm text-surface-400">
+          Clear all documents, financial metrics, red flags, and extracted data to start a fresh analysis session.
+          Your workspace will remain, but all previous research data will be permanently deleted.
+        </p>
+        {error && (
+          <p className="mb-4 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-400">
+            {error}
+          </p>
+        )}
+        <button
+          type="button"
+          onClick={() => clearAll()}
+          disabled={clearing}
+          className="inline-flex items-center gap-2 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-2.5 text-sm font-medium text-red-400 transition-colors hover:bg-red-500/20 disabled:opacity-50"
+        >
+          {clearing ? (
+            <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+            </svg>
+          ) : (
+            <Trash2 className="h-4 w-4" />
+          )}
+          {clearing ? 'Clearing data…' : 'Clear all data & start fresh'}
+        </button>
       </Card>
     </div>
   );

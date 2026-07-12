@@ -28,3 +28,7 @@ class DocumentRepository(BaseRepository):
     async def delete(self, document_id: str) -> bool:
         result = await self.collection.delete_one({"_id": document_id})
         return result.deleted_count == 1
+
+    async def delete_by_workspace(self, workspace_id: str) -> int:
+        result = await self.collection.delete_many({"workspace_id": workspace_id})
+        return result.deleted_count

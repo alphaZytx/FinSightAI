@@ -3,7 +3,9 @@ import { Upload, FileText, FileUp, Play, CheckCircle2, AlertCircle, FileSearch, 
 import { Card, Badge } from '../../components/Common';
 import { uploadDocument, ingestDocument, listDocuments, deleteDocument, type DocumentUploadResponse, type IngestResponse } from '../../services/api/documents';
 import { useWorkspaceStore } from '../../store/workspaceStore';
-import type { AnalysisMetric, AnalysisRedFlag } from '../../types';
+import { useClearWorkspaceData } from '../../hooks/useClearWorkspaceData';
+import type { AnalysisMetric, AnalysisRedFlag, ResearchStep } from '../../types';
+import ResearchProgress from '../../components/Dashboard/ResearchProgress';
 
 function formatMetric(value: number | null, unit?: string | null) {
   if (value === null || value === undefined) return 'Not reported';
@@ -325,6 +327,108 @@ function PipelineResults({ result }: { result: IngestResponse }) {
   );
 }
 
+function AnalysisProgressOverlay({ companyName, isBusy }: { companyName: string, isBusy: boolean }) {
+  const [currentStepIndex, setCurrentStepIndex] = useState(0);
+  const [isStepActive, setIsStepActive] = useState(true);
+  const [visible, setVisible] = useState(false);
+
+  const steps = [
+    'Document Uploaded',
+    'Parsing',
+    'Embedding Generated',
+    'Metrics Extracted',
+    'Red Flags Detected',
+    'Report Generated'
+  ];
+
+  useEffect(() => {
+    if (isBusy) {
+      setCurrentStepIndex(0);
+      setIsStepActive(true);
+      setVisible(true);
+    }
+  }, [isBusy]);
+
+  useEffect(() => {
+    if (!visible) return;
+
+    let timeoutId: ReturnType<typeof setTimeout>;
+
+    if (isBusy && currentStepIndex >= steps.length - 1 && isStepActive) {
+      return; // Pause at the last step if still busy
+    }
+
+    if (currentStepIndex < steps.length) {
+      if (isStepActive) {
+        // Currently processing the step. Next state is completing it.
+        let delay = 300;
+        if (isBusy) {
+          const unevenDelays = [
+            1500,  // Document Uploaded processing
+            4500,  // Parsing processing
+            6500,  // Embedding Generated processing
+            2500,  // Metrics Extracted processing
+            5500,  // Red Flags Detected processing
+            3000   // Report Generated processing
+          ];
+          delay = unevenDelays[currentStepIndex] || 3500;
+        }
+        
+        timeoutId = setTimeout(() => {
+          setIsStepActive(false); // Mark step as complete
+        }, delay);
+
+      } else {
+        // We are in the transition gap between steps
+        let delay = 100;
+        if (isBusy) {
+          delay = 800; // 800ms gap before the next step starts processing
+        }
+        
+        timeoutId = setTimeout(() => {
+          setCurrentStepIndex(prev => prev + 1);
+          setIsStepActive(true); // Start processing next step
+        }, delay);
+      }
+    }
+
+    return () => clearTimeout(timeoutId);
+  }, [isBusy, visible, currentStepIndex, isStepActive, steps.length]);
+
+  const allDone = currentStepIndex >= steps.length || (currentStepIndex === steps.length - 1 && !isStepActive);
+
+  useEffect(() => {
+    if (!isBusy && allDone) {
+      const timeout = setTimeout(() => {
+        setVisible(false);
+      }, 600);
+      return () => clearTimeout(timeout);
+    }
+  }, [isBusy, allDone]);
+
+  if (!visible) return null;
+
+  const progressSteps: ResearchStep[] = steps.map((label, index) => {
+    const isCompleted = index < currentStepIndex || (index === currentStepIndex && !isStepActive);
+    const isActive = index === currentStepIndex && isStepActive;
+    
+    return {
+      id: String(index + 1),
+      label,
+      completed: isCompleted,
+      active: isActive
+    };
+  });
+
+  return (
+    <div className={`fixed inset-0 z-50 flex items-center justify-center bg-surface-950/80 backdrop-blur-sm p-4 transition-all duration-500 ${allDone && !isBusy ? 'opacity-0' : 'opacity-100'}`}>
+      <div className="w-full max-w-md shadow-2xl animate-in fade-in zoom-in duration-300">
+        <ResearchProgress steps={progressSteps} companyName={companyName} />
+      </div>
+    </div>
+  );
+}
+
 export default function WorkspacePage() {
   const activeWorkspaceId = useWorkspaceStore((state) => state.activeWorkspaceId);
   const [companyName, setCompanyName] = useState('');
@@ -340,6 +444,7 @@ export default function WorkspacePage() {
   const [documents, setDocuments] = useState<DocumentUploadResponse[]>([]);
   const [loadingDocs, setLoadingDocs] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const { clearAll, clearing: clearingAll } = useClearWorkspaceData();
 
   useEffect(() => {
     if (!activeWorkspaceId) return;
@@ -361,6 +466,15 @@ export default function WorkspacePage() {
     } finally {
       setDeletingId(null);
     }
+  }
+
+  async function clearAllData() {
+    const cleared = await clearAll();
+    if (!cleared) return;
+    setDocuments([]);
+    setUploaded(null);
+    setIngestResult(null);
+    setError(null);
   }
 
   async function submit(event: FormEvent) {
@@ -403,6 +517,7 @@ export default function WorkspacePage() {
 
   return (
     <div className="space-y-6">
+      <AnalysisProgressOverlay isBusy={busy} companyName={uploaded?.company_name || companyName || 'Company'} />
       <div>
         <h1 className="text-2xl font-bold text-white">Workspace</h1>
         <p className="mt-1 text-sm text-surface-400">Upload and analyze financial documents</p>
@@ -530,9 +645,29 @@ export default function WorkspacePage() {
 
       {/* Document Library */}
       <div className="rounded-xl border border-surface-700/60 bg-surface-900/50 p-6">
-        <div className="mb-4">
-          <h2 className="text-base font-semibold text-white">Document Library</h2>
-          <p className="mt-0.5 text-xs text-surface-400">All uploaded documents in this workspace</p>
+        <div className="mb-4 flex items-start justify-between gap-4">
+          <div>
+            <h2 className="text-base font-semibold text-white">Document Library</h2>
+            <p className="mt-0.5 text-xs text-surface-400">All uploaded documents in this workspace</p>
+          </div>
+          {documents.length > 0 && (
+            <button
+              type="button"
+              onClick={clearAllData}
+              disabled={clearingAll || deletingId !== null}
+              className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-1.5 text-xs font-medium text-red-400 transition-colors hover:bg-red-500/20 disabled:opacity-50"
+            >
+              {clearingAll ? (
+                <svg className="h-3.5 w-3.5 animate-spin" viewBox="0 0 24 24" fill="none">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                </svg>
+              ) : (
+                <Trash2 className="h-3.5 w-3.5" />
+              )}
+              Clear all & start fresh
+            </button>
+          )}
         </div>
         {loadingDocs ? (
           <div className="flex items-center justify-center py-10">

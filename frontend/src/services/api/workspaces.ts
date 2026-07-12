@@ -23,3 +23,16 @@ export function getDefaultWorkspace(): Promise<WorkspaceRecord> {
 export function getWorkspaceAnalysis(workspaceId: string): Promise<WorkspaceAnalysis> {
   return apiFetch<WorkspaceAnalysis>(`/workspaces/${workspaceId}/analysis`);
 }
+
+export type ClearWorkspaceDataResponse = {
+  cleared: boolean;
+  workspace_id: string;
+  documents_deleted: number;
+  chunks_deleted: number;
+  metrics_deleted: number;
+  flags_deleted: number;
+};
+
+export function clearWorkspaceData(workspaceId: string): Promise<ClearWorkspaceDataResponse> {
+  return apiFetch<ClearWorkspaceDataResponse>(`/workspaces/${workspaceId}/data`, { method: 'DELETE' });
+}
