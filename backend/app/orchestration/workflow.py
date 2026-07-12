@@ -1,4 +1,4 @@
-﻿from app.agents.comparison_agent import ComparisonAgent
+from app.agents.comparison_agent import ComparisonAgent
 from app.agents.document_agent import DocumentAgent
 from app.agents.extraction_agent import ExtractionAgent
 from app.agents.red_flag_agent import RedFlagAgent
@@ -7,10 +7,11 @@ from app.agents.red_flag_agent import RedFlagAgent
 class AgentWorkflow:
     """Coordinates document-triggered work and exposes workspace-level analysis."""
 
-    def __init__(self) -> None:
+    def __init__(self, llm_provider: str = "groq") -> None:
+        self.llm_provider = llm_provider
         self.document_agent = DocumentAgent()
-        self.extraction_agent = ExtractionAgent()
-        self.red_flag_agent = RedFlagAgent()
+        self.extraction_agent = ExtractionAgent(llm_provider=llm_provider)
+        self.red_flag_agent = RedFlagAgent(llm_provider=llm_provider)
         self.comparison_agent = ComparisonAgent()
 
     async def run_document_pipeline(self, document_id: str) -> dict:

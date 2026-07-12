@@ -1,4 +1,4 @@
-﻿from collections import Counter
+from collections import Counter
 
 from app.repositories.document_repository import DocumentRepository
 from app.repositories.metric_repository import MetricRepository
@@ -36,8 +36,8 @@ class WorkspaceAnalysisService:
                 "pipeline_ready": indexed_documents > 0,
             },
             "documents": [self._document_view(item) for item in documents],
-            "metrics": [self._metric_view(item) for item in self._prioritize_metrics(metrics)[:80]],
-            "red_flags": [self._flag_view(item) for item in self._prioritize_flags(red_flags)[:24]],
+            "metrics": [self._metric_view(item) for item in self._prioritize_metrics(metrics)[:200]],
+            "red_flags": [self._flag_view(item) for item in self._prioritize_flags(red_flags)[:50]],
         }
 
     async def _load_workspace_data(self, workspace_id: str) -> tuple[list[dict], list[dict], list[dict]]:

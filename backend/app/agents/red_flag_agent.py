@@ -1,4 +1,4 @@
-﻿import asyncio
+import asyncio
 from collections import defaultdict
 from pathlib import Path
 from uuid import uuid4
@@ -39,12 +39,12 @@ class RedFlagAgent(BaseAgent):
     name = "RedFlagAgent"
     description = "Detects cited qualitative and quantitative financial risks."
 
-    def __init__(self) -> None:
+    def __init__(self, llm_provider: str = "groq") -> None:
         self.documents = DocumentRepository()
         self.chunks = ChunkRepository()
         self.metrics = MetricRepository()
         self.red_flags = RedFlagRepository()
-        self.llm = LLMService()
+        self.llm = LLMService(provider=llm_provider)
 
     async def run(self, state: dict) -> AgentResult:
         document_id = state.get("document_id")

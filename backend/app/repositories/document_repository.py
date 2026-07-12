@@ -24,3 +24,7 @@ class DocumentRepository(BaseRepository):
 
     async def update_status(self, document_id: str, status: str) -> None:
         await self.collection.update_one({"_id": document_id}, {"$set": {"status": status}})
+
+    async def delete(self, document_id: str) -> bool:
+        result = await self.collection.delete_one({"_id": document_id})
+        return result.deleted_count == 1

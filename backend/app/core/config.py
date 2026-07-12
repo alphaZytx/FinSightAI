@@ -1,4 +1,4 @@
-﻿import json
+import json
 from pathlib import Path
 
 from pydantic_settings import BaseSettings
@@ -18,10 +18,18 @@ class Settings(BaseSettings):
     LLM_API_KEY: str = "replace_me"
     GROQ_API_KEY: str = "replace_me"
     GROQ_MODEL: str = "llama-3.3-70b-versatile"
+    GOOGLE_API_KEY: str = "replace_me"
+    GOOGLE_MODEL: str = "gemini-2.5-flash"
     EMBEDDING_MODEL: str = "text-embedding-model"
     UPLOAD_DIR: str = "storage/raw"
     REPORT_DIR: str = "storage/reports"
     CORS_ORIGINS_STR: str = "http://localhost:5173,http://localhost:5174,http://localhost:5175,http://127.0.0.1:5173,http://127.0.0.1:5174,http://127.0.0.1:5175"
+
+    # Auth / JWT
+    JWT_SECRET_KEY: str = "change_me_to_a_long_random_secret"
+    JWT_ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
+    REFRESH_TOKEN_EXPIRE_DAYS: int = 7
 
     @property
     def CORS_ORIGINS(self) -> list[str]:

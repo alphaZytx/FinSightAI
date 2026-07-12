@@ -6,3 +6,4 @@ class ResearchQuestion(BaseModel):
     session_id: str | None = None
     question: str
     top_k: int = 8
+    llm_provider: str = "groq"

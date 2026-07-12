@@ -14,7 +14,6 @@ MAX_UPLOAD_BYTES = 50 * 1024 * 1024
 class DocumentService:
     def __init__(self) -> None:
         self.repo = DocumentRepository()
-        self.workflow = AgentWorkflow()
 
     async def upload_document(
         self,
@@ -24,6 +23,7 @@ class DocumentService:
         document_type: str,
         file: UploadFile,
         auto_ingest: bool = False,
+        llm_provider: str = "groq",
     ) -> dict:
         original_name = file.filename or "document.pdf"
         if Path(original_name).suffix.lower() != ".pdf":
@@ -57,10 +57,41 @@ class DocumentService:
         })
 
         if auto_ingest:
-            ingestion_result = await self.ingest_document(record["_id"])
+            ingestion_result = await self.ingest_document(record["_id"], llm_provider=llm_provider)
             record["ingestion_result"] = ingestion_result
             record["status"] = "indexed" if ingestion_result.get("results", {}).get("document", {}).get("status") == "success" else "uploaded"
         return record
 
-    async def ingest_document(self, document_id: str) -> dict:
-        return await self.workflow.run_document_pipeline(document_id)
+    async def ingest_document(self, document_id: str, llm_provider: str = "groq") -> dict:
+        workflow = AgentWorkflow(llm_provider=llm_provider)
+        return await workflow.run_document_pipeline(document_id)
+
+    async def list_documents(self, workspace_id: str) -> list[dict]:
+        return await self.repo.find_by_workspace(workspace_id)
+
+    async def delete_document(self, document_id: str) -> dict:
+        from fastapi import HTTPException
+        from app.repositories.chunk_repository import ChunkRepository
+        from app.repositories.metric_repository import MetricRepository
+        from app.repositories.red_flag_repository import RedFlagRepository
+
+        doc = await self.repo.get_by_id(document_id)
+        if doc is None:
+            raise HTTPException(status_code=404, detail="Document not found.")
+
+        file_path = Path(doc.get("file_path", ""))
+        if file_path.exists():
+            file_path.unlink()
+
+        chunks_deleted = await ChunkRepository().delete_by_document(document_id)
+        metrics_deleted = await MetricRepository().delete_by_document(document_id)
+        flags_deleted = await RedFlagRepository().delete_by_document(document_id)
+        await self.repo.delete(document_id)
+
+        return {
+            "deleted": True,
+            "document_id": document_id,
+            "chunks_deleted": chunks_deleted,
+            "metrics_deleted": metrics_deleted,
+            "flags_deleted": flags_deleted,
+        }

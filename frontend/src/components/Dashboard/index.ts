@@ -1,0 +1,11 @@
+export { default as WelcomeBanner } from './WelcomeBanner';
+export { default as StatisticsCards } from './StatisticsCards';
+export { default as QuickActions } from './QuickActions';
+export { default as RecentActivity } from './RecentActivity';
+export { default as AgentStatusPanel } from './AgentStatus';
+export { default as RecentCompanies } from './RecentCompanies';
+export { default as ResearchProgress } from './ResearchProgress';
+export { default as FinancialCharts } from './FinancialCharts';
+export { default as NotificationsPanel } from './NotificationsPanel';
+export { LiveStatisticsCards } from './LiveStatisticsCards';
+export { WorkspaceInsights } from './WorkspaceInsights';

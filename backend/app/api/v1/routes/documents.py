@@ -5,6 +5,11 @@ router = APIRouter()
 service = DocumentService()
 
 
+@router.get("")
+async def list_documents(workspace_id: str):
+    return await service.list_documents(workspace_id)
+
+
 @router.post("/upload")
 async def upload_document(
     workspace_id: str = Form(...),
@@ -12,6 +17,7 @@ async def upload_document(
     fiscal_year: str = Form(...),
     document_type: str = Form("annual_report"),
     auto_ingest: bool = Form(False),
+    llm_provider: str = Form("groq"),
     file: UploadFile = File(...),
 ):
     return await service.upload_document(
@@ -21,9 +27,15 @@ async def upload_document(
         document_type=document_type,
         file=file,
         auto_ingest=auto_ingest,
+        llm_provider=llm_provider,
     )
 
 
 @router.post("/{document_id}/ingest")
-async def ingest_document(document_id: str):
-    return await service.ingest_document(document_id)
+async def ingest_document(document_id: str, llm_provider: str = "groq"):
+    return await service.ingest_document(document_id, llm_provider=llm_provider)
+
+
+@router.delete("/{document_id}")
+async def delete_document(document_id: str):
+    return await service.delete_document(document_id)

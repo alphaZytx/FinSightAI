@@ -16,27 +16,62 @@ from app.utils.finance_units import normalize_unit
 # Aliases intentionally favour unambiguous terms used in annual reports. Derived
 # ratios are added only when their documented component metrics are available.
 METRIC_ALIASES = {
-    "revenue": ["total revenue", "net revenue", "net sales", "revenue", "sales"],
-    "gross_profit": ["gross profit"],
+    # ── Income Statement ──
+    "revenue": ["total revenue", "net revenue", "net sales", "revenue", "sales", "total income", "income from operations"],
+    "cost_of_revenue": ["cost of goods sold", "cost of revenue", "cost of sales", "cogs"],
+    "gross_profit": ["gross profit", "gross income"],
+    "operating_expenses": ["total operating expenses", "operating expenses"],
+    "sga_expense": ["selling general and administrative", "sg&a", "selling and administrative"],
+    "rd_expense": ["research and development", "r&d expense", "r&d"],
+    "depreciation": ["depreciation and amortization", "depreciation", "amortization"],
     "ebitda": ["adjusted ebitda", "ebitda"],
-    "operating_income": ["operating income", "income from operations", "operating profit"],
-    "net_income": ["net income", "profit after tax", "profit attributable", "net profit"],
-    "gross_margin": ["gross margin"],
-    "operating_margin": ["operating margin"],
-    "total_debt": ["total debt", "total borrowings", "borrowings", "debt"],
-    "cash": ["cash and cash equivalents", "cash equivalents", "cash and bank balances"],
-    "total_assets": ["total assets"],
-    "total_liabilities": ["total liabilities"],
-    "total_equity": ["total equity", "shareholders' equity", "stockholders' equity"],
-    "current_assets": ["total current assets", "current assets"],
-    "current_liabilities": ["total current liabilities", "current liabilities"],
-    "operating_cash_flow": ["net cash from operating activities", "cash flow from operating activities", "operating cash flow"],
-    "free_cash_flow": ["free cash flow"],
-    "capex": ["capital expenditures", "capital expenditure", "capex"],
-    "inventory": ["inventories", "inventory"],
-    "accounts_receivable": ["accounts receivable", "trade receivables", "receivables"],
+    "operating_income": ["operating income", "income from operations", "operating profit", "ebit"],
+    "interest_expense": ["interest expense", "finance costs", "interest and finance charges"],
+    "pretax_income": ["profit before tax", "income before tax", "pre-tax income", "pbt"],
+    "tax_expense": ["income tax expense", "provision for income taxes", "tax expense", "current tax"],
+    "net_income": ["net income", "profit after tax", "profit attributable", "net profit", "pat", "net earnings"],
     "eps": ["diluted eps", "basic eps", "earnings per share", "eps"],
-    "interest_expense": ["interest expense", "finance costs"],
+    "dps": ["dividend per share", "dps", "dividends per share"],
+    # ── Margins (reported) ──
+    "gross_margin": ["gross margin", "gross profit margin"],
+    "operating_margin": ["operating margin", "operating profit margin"],
+    "net_margin": ["net margin", "net profit margin", "pat margin"],
+    "ebitda_margin": ["ebitda margin"],
+    # ── Balance Sheet ──
+    "total_assets": ["total assets"],
+    "current_assets": ["total current assets", "current assets"],
+    "cash": ["cash and cash equivalents", "cash equivalents", "cash and bank balances"],
+    "short_term_investments": ["short-term investments", "marketable securities", "current investments"],
+    "accounts_receivable": ["accounts receivable", "trade receivables", "receivables", "sundry debtors"],
+    "inventory": ["inventories", "inventory"],
+    "non_current_assets": ["total non-current assets", "non-current assets", "fixed assets"],
+    "ppe": ["property plant and equipment", "property, plant and equipment", "pp&e", "tangible assets"],
+    "goodwill": ["goodwill", "goodwill and intangible assets", "intangible assets"],
+    "total_liabilities": ["total liabilities"],
+    "current_liabilities": ["total current liabilities", "current liabilities"],
+    "accounts_payable": ["accounts payable", "trade payables", "sundry creditors"],
+    "short_term_debt": ["short-term borrowings", "current portion of long-term debt", "short-term debt"],
+    "long_term_debt": ["long-term debt", "long-term borrowings", "non-current borrowings"],
+    "total_debt": ["total debt", "total borrowings", "borrowings", "gross debt"],
+    "total_equity": ["total equity", "shareholders' equity", "stockholders' equity", "net worth", "shareholders fund"],
+    "book_value_per_share": ["book value per share", "bvps"],
+    # ── Cash Flow ──
+    "operating_cash_flow": ["net cash from operating activities", "cash flow from operating activities", "operating cash flow", "cash from operations"],
+    "capex": ["capital expenditures", "capital expenditure", "capex", "purchase of fixed assets"],
+    "free_cash_flow": ["free cash flow", "fcf"],
+    "investing_cash_flow": ["cash flow from investing activities", "investing activities", "net cash used in investing"],
+    "financing_cash_flow": ["cash flow from financing activities", "financing activities", "net cash from financing"],
+    "dividends_paid": ["dividends paid", "dividend paid", "cash dividends"],
+    # ── Ratios & Returns (if reported) ──
+    "roe": ["return on equity", "roe"],
+    "roa": ["return on assets", "roa"],
+    "roce": ["return on capital employed", "roce"],
+    "current_ratio": ["current ratio"],
+    "debt_to_equity": ["debt to equity", "debt-to-equity", "d/e ratio"],
+    "interest_coverage": ["interest coverage", "interest coverage ratio"],
+    "revenue_growth": ["revenue growth", "sales growth", "top-line growth"],
+    # ── Other ──
+    "employee_count": ["number of employees", "total employees", "headcount", "employee strength"],
 }
 
 VALUE_PATTERN = re.compile(
@@ -66,11 +101,11 @@ class ExtractionAgent(BaseAgent):
     name = "ExtractionAgent"
     description = "Extracts citable financial metrics and derives evidence-backed ratios."
 
-    def __init__(self) -> None:
+    def __init__(self, llm_provider: str = "groq") -> None:
         self.documents = DocumentRepository()
         self.chunks = ChunkRepository()
         self.metrics = MetricRepository()
-        self.llm = LLMService()
+        self.llm = LLMService(provider=llm_provider)
 
     async def run(self, state: dict) -> AgentResult:
         document_id = state.get("document_id")
@@ -108,31 +143,44 @@ class ExtractionAgent(BaseAgent):
         )
 
     async def _llm_extract(self, document: dict, chunks: list[dict], existing: list[dict]) -> list[dict]:
-        """Request a conservative second pass and keep only supplied source pages."""
+        """Run multiple LLM passes across batches of chunks for thorough extraction."""
         if not chunks:
             return []
 
-        sample_chunks = chunks[:8]
-        source_chunks = {chunk.get("page_start"): chunk for chunk in sample_chunks}
-        context_parts = []
-        for index, chunk in enumerate(sample_chunks, 1):
-            text = " ".join(chunk.get("text", "").split())[:650]
-            context_parts.append(f"[Chunk {index} | Page {chunk.get('page_start', '?')}]\n{text}")
+        all_llm_metrics: list[dict] = []
+        batch_size = 10
+        max_chunks = min(len(chunks), 30)
+        existing_names = [item["metric_name"] for item in existing[:20]]
 
-        existing_names = [item["metric_name"] for item in existing[:14]]
-        prompt = (
-            f"Company: {document.get('company_name', 'Unknown')}\n"
-            f"Fiscal year: {document.get('fiscal_year', 'Unknown')}\n"
-            f"Existing metrics: {', '.join(existing_names) or 'none'}\n\n"
-            "Extract only additional metrics that are explicitly stated in the chunks below. "
-            "A source_page must match a supplied page; do not infer values or periods. "
-            "Return [] if nothing additional is reliable.\n\n"
-            + "\n\n".join(context_parts)
-        )
-        raw = await asyncio.to_thread(self.llm.complete, _load_extraction_prompt(), prompt, max_tokens=1500)
-        if not raw:
-            return []
-        return self._parse_llm_metrics(raw, document, source_chunks)
+        for batch_start in range(0, max_chunks, batch_size):
+            batch_chunks = chunks[batch_start:batch_start + batch_size]
+            source_chunks = {chunk.get("page_start"): chunk for chunk in batch_chunks}
+            context_parts = []
+            for index, chunk in enumerate(batch_chunks, 1):
+                text = " ".join(chunk.get("text", "").split())[:900]
+                context_parts.append(f"[Chunk {index} | Page {chunk.get('page_start', '?')}]\n{text}")
+
+            already_found = existing_names + [item["metric_name"] for item in all_llm_metrics]
+            prompt = (
+                f"Company: {document.get('company_name', 'Unknown')}\n"
+                f"Fiscal year: {document.get('fiscal_year', 'Unknown')}\n"
+                f"Already extracted metrics: {', '.join(already_found[:30]) or 'none'}\n\n"
+                "Extract ALL financial metrics explicitly stated in the chunks below. "
+                "Include income statement items, balance sheet items, cash flow items, "
+                "ratios, margins, per-share data, growth rates, and any other quantifiable "
+                "financial data. Extract both current and prior period values if shown.\n"
+                "A source_page must match a supplied page; do not infer values or periods. "
+                "Return [] only if absolutely no financial data is present.\n\n"
+                + "\n\n".join(context_parts)
+            )
+            raw = await asyncio.to_thread(
+                self.llm.complete, _load_extraction_prompt(), prompt, max_tokens=4096
+            )
+            if raw:
+                batch_metrics = self._parse_llm_metrics(raw, document, source_chunks)
+                all_llm_metrics.extend(batch_metrics)
+
+        return all_llm_metrics
 
     def _parse_llm_metrics(self, raw: str, document: dict, source_chunks: dict[int, dict]) -> list[dict]:
         metrics: list[dict] = []
@@ -209,7 +257,7 @@ class ExtractionAgent(BaseAgent):
                         )
                     )
                     break
-        return metrics[:100]
+        return metrics[:200]
 
     def _classify_metric_name(self, metric_name: str, unit: str | None, line: str) -> str:
         lowered = line.lower()
@@ -253,10 +301,15 @@ class ExtractionAgent(BaseAgent):
             ("gross_margin", "Gross Margin", "gross_profit", "revenue", "percent", lambda left, right: left / right * 100),
             ("operating_margin", "Operating Margin", "operating_income", "revenue", "percent", lambda left, right: left / right * 100),
             ("net_margin", "Net Margin", "net_income", "revenue", "percent", lambda left, right: left / right * 100),
+            ("ebitda_margin", "EBITDA Margin", "ebitda", "revenue", "percent", lambda left, right: left / right * 100),
             ("current_ratio", "Current Ratio", "current_assets", "current_liabilities", "x", lambda left, right: left / right),
             ("debt_to_equity", "Debt to Equity", "total_debt", "total_equity", "x", lambda left, right: left / right),
             ("debt_to_ebitda", "Debt to EBITDA", "total_debt", "ebitda", "x", lambda left, right: left / right),
+            ("interest_coverage", "Interest Coverage", "operating_income", "interest_expense", "x", lambda left, right: left / right),
+            ("roe", "Return on Equity", "net_income", "total_equity", "percent", lambda left, right: left / right * 100),
+            ("roa", "Return on Assets", "net_income", "total_assets", "percent", lambda left, right: left / right * 100),
             ("free_cash_flow", "Free Cash Flow", "operating_cash_flow", "capex", None, lambda left, right: left - abs(right)),
+            ("working_capital", "Working Capital", "current_assets", "current_liabilities", None, lambda left, right: left - right),
         ]
         derived: list[dict] = []
         for metric_name, display_name, numerator_name, denominator_name, unit, calculator in candidates:

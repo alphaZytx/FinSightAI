@@ -1,4 +1,4 @@
-﻿import asyncio
+import asyncio
 import re
 from pathlib import Path
 
@@ -32,10 +32,10 @@ class ResearchAgent(BaseAgent):
     name = "ResearchAgent"
     description = "Answers research questions through multi-step retrieval with strict citations."
 
-    def __init__(self) -> None:
+    def __init__(self, llm_provider: str = "groq") -> None:
         self.retriever = RetrievalService()
         self.citations = CitationService()
-        self.llm = LLMService()
+        self.llm = LLMService(provider=llm_provider)
 
     async def run(self, state: dict) -> AgentResult:
         workspace_id = state.get("workspace_id")
