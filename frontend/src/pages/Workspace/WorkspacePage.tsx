@@ -364,14 +364,16 @@ function AnalysisProgressOverlay({ companyName, isBusy }: { companyName: string,
         let delay = 300;
         if (isBusy) {
           const unevenDelays = [
-            1500,  // Document Uploaded processing
-            4500,  // Parsing processing
-            6500,  // Embedding Generated processing
-            2500,  // Metrics Extracted processing
-            5500,  // Red Flags Detected processing
-            3000   // Report Generated processing
+            150,   // Document Uploaded processing
+            400,   // Parsing processing
+            600,   // Embedding Generated processing
+            300,   // Metrics Extracted processing
+            500,   // Red Flags Detected processing
+            300    // Report Generated processing
           ];
-          delay = unevenDelays[currentStepIndex] || 3500;
+          delay = unevenDelays[currentStepIndex] || 500;
+        } else {
+          delay = 50; // Super fast if backend is already done
         }
         
         timeoutId = setTimeout(() => {
@@ -380,9 +382,9 @@ function AnalysisProgressOverlay({ companyName, isBusy }: { companyName: string,
 
       } else {
         // We are in the transition gap between steps
-        let delay = 100;
+        let delay = 30; // Very short gap if backend is done
         if (isBusy) {
-          delay = 800; // 800ms gap before the next step starts processing
+          delay = 100; // 100ms gap before the next step starts processing
         }
         
         timeoutId = setTimeout(() => {
@@ -401,7 +403,7 @@ function AnalysisProgressOverlay({ companyName, isBusy }: { companyName: string,
     if (!isBusy && allDone) {
       const timeout = setTimeout(() => {
         setVisible(false);
-      }, 600);
+      }, 200);
       return () => clearTimeout(timeout);
     }
   }, [isBusy, allDone]);

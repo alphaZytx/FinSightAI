@@ -23,7 +23,7 @@ export default function ResearchProgress({ steps = mockResearchSteps, companyNam
         </div>
         <div className="mt-2 h-2 overflow-hidden rounded-full bg-surface-700">
           <div
-            className="h-full rounded-full bg-gradient-to-r from-primary-600 to-primary-400 transition-all duration-500"
+            className="h-full rounded-full bg-gradient-to-r from-primary-600 to-primary-400 transition-all duration-300"
             style={{ width: `${progress}%` }}
           />
         </div>
