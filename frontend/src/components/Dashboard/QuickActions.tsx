@@ -18,12 +18,12 @@ export default function QuickActions() {
           <Link
             key={label}
             to={path}
-            className="flex flex-col items-center gap-3 rounded-xl border border-surface-700/40 bg-surface-900/40 p-4 text-center transition-all hover:border-primary-500/30 hover:bg-surface-800/60"
+            className="flex flex-col items-center gap-3 rounded-xl border border-border bg-card p-4 text-center transition-all hover:border-primary-500/30 hover:bg-muted"
           >
             <div className={`rounded-xl p-3 ${color}`}>
               <Icon className="h-5 w-5" />
             </div>
-            <span className="text-xs font-medium text-surface-200">{label}</span>
+            <span className="text-xs font-medium text-foreground-muted">{label}</span>
           </Link>
         ))}
       </div>

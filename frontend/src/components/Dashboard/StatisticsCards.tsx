@@ -21,7 +21,7 @@ export default function StatisticsCards({ stats = mockStats }: StatisticsCardsPr
         return (
           <div
             key={stat.label}
-            className="group rounded-xl border border-surface-700/60 bg-surface-800/50 p-5 transition-all hover:border-primary-500/30 hover:bg-surface-800/80"
+            className="group rounded-xl border border-border bg-muted p-5 transition-all hover:border-primary-500/30 hover:bg-muted"
           >
             <div className="flex items-start justify-between">
               <div className="rounded-lg bg-primary-500/10 p-2.5">
@@ -32,7 +32,7 @@ export default function StatisticsCards({ stats = mockStats }: StatisticsCardsPr
               )}
             </div>
             <p className="mt-4 text-2xl font-bold text-white">{stat.value}</p>
-            <p className="mt-1 text-sm text-surface-400">{stat.label}</p>
+            <p className="mt-1 text-sm text-muted-foreground">{stat.label}</p>
           </div>
         );
       })}

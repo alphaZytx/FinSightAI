@@ -25,16 +25,16 @@ export default function RecentActivity({ activities = mockActivities }: RecentAc
           return (
             <div
               key={activity.id}
-              className="flex items-start gap-3 rounded-lg border border-surface-700/30 bg-surface-900/30 p-3 transition-colors hover:bg-surface-800/40"
+              className="flex items-start gap-3 rounded-lg border border-border bg-card p-3 transition-colors hover:bg-muted"
             >
               <div className={`mt-0.5 rounded-lg p-2 ${config.color}`}>
                 <Icon className="h-4 w-4" />
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium text-surface-100">{activity.title}</p>
-                <p className="mt-0.5 truncate text-xs text-surface-400">{activity.description}</p>
+                <p className="text-sm font-medium text-foreground">{activity.title}</p>
+                <p className="mt-0.5 truncate text-xs text-muted-foreground">{activity.description}</p>
               </div>
-              <span className="shrink-0 text-xs text-surface-500">
+              <span className="shrink-0 text-xs text-muted-foreground">
                 {formatRelativeTime(activity.timestamp)}
               </span>
             </div>

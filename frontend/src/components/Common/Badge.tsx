@@ -8,7 +8,7 @@ const variants = {
   warning: 'bg-amber-500/15 text-amber-400 border-amber-500/30',
   error: 'bg-red-500/15 text-red-400 border-red-500/30',
   info: 'bg-blue-500/15 text-blue-400 border-blue-500/30',
-  neutral: 'bg-surface-600/30 text-surface-300 border-surface-600/50',
+  neutral: 'bg-muted text-foreground-muted border-border',
 };
 
 export default function Badge({ children, variant = 'neutral' }: BadgeProps) {

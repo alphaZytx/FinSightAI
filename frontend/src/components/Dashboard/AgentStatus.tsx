@@ -20,7 +20,7 @@ export default function AgentStatusPanel({ agents = mockAgents }: AgentStatusPan
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-surface-700/40 text-left text-xs text-surface-400">
+            <tr className="border-b border-border text-left text-xs text-muted-foreground">
               <th className="pb-3 pr-4 font-medium">Agent</th>
               <th className="pb-3 font-medium">Status</th>
             </tr>
@@ -30,11 +30,11 @@ export default function AgentStatusPanel({ agents = mockAgents }: AgentStatusPan
               const config = statusConfig[agent.status];
               const StatusIcon = config.icon;
               return (
-                <tr key={agent.name} className="border-b border-surface-700/20 last:border-0">
+                <tr key={agent.name} className="border-b border-border last:border-0">
                   <td className="py-3 pr-4">
                     <div className="flex items-center gap-2">
                       <Bot className="h-4 w-4 text-primary-400" />
-                      <span className="text-surface-200">{agent.name}</span>
+                      <span className="text-foreground-muted">{agent.name}</span>
                     </div>
                   </td>
                   <td className="py-3">

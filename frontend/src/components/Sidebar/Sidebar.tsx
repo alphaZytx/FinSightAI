@@ -30,18 +30,18 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
 
   return (
     <aside
-      className={`fixed left-0 top-0 z-30 flex h-screen flex-col border-r border-surface-700/60 bg-surface-900/95 backdrop-blur-md transition-all duration-300 ${
+      className={`fixed left-0 top-0 z-30 flex h-screen flex-col border-r border-border bg-card backdrop-blur-md transition-all duration-300 ${
         collapsed ? 'w-[72px]' : 'w-64'
       }`}
     >
-      <div className="flex h-16 items-center gap-3 border-b border-surface-700/60 px-4">
+      <div className="flex h-16 items-center gap-3 border-b border-border px-4">
         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary-600">
           <Brain className="h-5 w-5 text-white" />
         </div>
         {!collapsed && (
           <div>
             <p className="text-sm font-bold text-white">FinSightAI</p>
-            <p className="text-[10px] text-surface-400">Financial Research</p>
+            <p className="text-[10px] text-muted-foreground">Financial Research</p>
           </div>
         )}
       </div>
@@ -57,7 +57,7 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
               className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all ${
                 isActive
                   ? 'bg-primary-600/20 text-primary-300'
-                  : 'text-surface-400 hover:bg-surface-800 hover:text-surface-100'
+                  : 'text-muted-foreground hover:bg-muted hover:text-foreground'
               }`}
             >
               <Icon className={`h-5 w-5 shrink-0 ${isActive ? 'text-primary-400' : ''}`} />
@@ -70,7 +70,7 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
       <button
         type="button"
         onClick={onToggle}
-        className="flex h-12 items-center justify-center border-t border-surface-700/60 text-surface-400 transition-colors hover:bg-surface-800 hover:text-surface-200"
+        className="flex h-12 items-center justify-center border-t border-border text-muted-foreground transition-colors hover:bg-muted hover:text-foreground-muted"
       >
         {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
       </button>

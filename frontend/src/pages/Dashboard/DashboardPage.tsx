@@ -51,9 +51,9 @@ export default function DashboardPage() {
         <div className="space-y-6 xl:col-span-2">
           {/* Show real workspace insights when data is available */}
           {analysis.isLoading && (
-            <div className="flex items-center gap-2 rounded-lg border border-surface-700/60 bg-surface-800/50 p-4">
+            <div className="flex items-center gap-2 rounded-lg border border-border bg-muted p-4">
               <span className="h-2 w-2 rounded-full bg-primary-500 animate-pulse" />
-              <span className="text-sm text-surface-400">Loading document intelligence…</span>
+              <span className="text-sm text-muted-foreground">Loading document intelligence…</span>
             </div>
           )}
           {analysis.error && (

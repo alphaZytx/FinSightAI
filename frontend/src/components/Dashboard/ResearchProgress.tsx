@@ -17,7 +17,7 @@ export default function ResearchProgress({ steps = mockResearchSteps, companyNam
   return (
     <Card title="Research Progress" subtitle={`${companyName} — ${progress}% complete`}>
       <div className="mb-4">
-        <div className="flex items-center justify-between text-xs text-surface-400">
+        <div className="flex items-center justify-between text-xs text-muted-foreground">
           <span>Overall progress</span>
           <span>{progress}%</span>
         </div>
@@ -39,7 +39,7 @@ export default function ResearchProgress({ steps = mockResearchSteps, companyNam
                     ? 'border-emerald-500 bg-emerald-500/20 text-emerald-400'
                     : step.active
                       ? 'border-primary-500 bg-primary-500/20 text-primary-400'
-                      : 'border-surface-600 bg-surface-800 text-surface-500'
+                      : 'border-surface-600 bg-muted text-muted-foreground'
                 }`}
               >
                 {step.completed ? (
@@ -65,13 +65,13 @@ export default function ResearchProgress({ steps = mockResearchSteps, companyNam
                     ? 'text-emerald-400'
                     : step.active
                       ? 'text-primary-300'
-                      : 'text-surface-400'
+                      : 'text-muted-foreground'
                 }`}
               >
                 {step.label}
               </p>
               {step.active && (
-                <p className="mt-0.5 text-xs text-surface-500">In progress...</p>
+                <p className="mt-0.5 text-xs text-muted-foreground">In progress...</p>
               )}
             </div>
           </div>

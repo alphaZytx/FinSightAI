@@ -14,7 +14,10 @@ import {
   EyeOff,
   ArrowLeft,
   CheckCircle2,
+  Sun,
+  Moon,
 } from 'lucide-react';
+import { useTheme } from '../../context/ThemeContext';
 import { saveSession } from '../../utils/auth';
 import { apiLogin, apiRegister } from '../../services/api/auth';
 
@@ -74,11 +77,11 @@ function AuthInput({
 }) {
   return (
     <div>
-      <label htmlFor={id} className="mb-1.5 block text-xs font-medium tracking-wide text-surface-400 uppercase">
+      <label htmlFor={id} className="mb-1.5 block text-xs font-medium tracking-wide text-muted-foreground uppercase">
         {label}
       </label>
       <div className="relative">
-        <Icon className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-surface-500" />
+        <Icon className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <input
           id={id}
           type={showToggle ? (visible ? 'text' : 'password') : type}
@@ -86,17 +89,16 @@ function AuthInput({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           required
-          className={`w-full rounded-xl border bg-surface-800/60 py-3 pl-10 pr-10 text-sm text-surface-100 placeholder:text-surface-500 transition-all focus:bg-surface-800 focus:outline-none focus:ring-2 ${
-            error
+          className={`w-full rounded-xl border bg-muted py-3 pl-10 pr-10 text-sm text-foreground placeholder:text-muted-foreground transition-all focus:bg-muted focus:outline-none focus:ring-2 ${error
               ? 'border-red-500/60 focus:border-red-500/60 focus:ring-red-500/20'
-              : 'border-surface-700/80 focus:border-primary-500/60 focus:ring-primary-500/20'
-          }`}
+              : 'border-border focus:border-primary-500/60 focus:ring-primary-500/20'
+            }`}
         />
         {showToggle && (
           <button
             type="button"
             onClick={onToggle}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-surface-500 transition-colors hover:text-surface-300"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground-muted"
             aria-label={visible ? 'Hide password' : 'Show password'}
           >
             {visible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -120,12 +122,12 @@ function SuccessCard({
   onAction: () => void;
 }) {
   return (
-    <div className="rounded-2xl border border-surface-700/60 bg-surface-900/50 p-8 text-center backdrop-blur-sm">
+    <div className="rounded-2xl border border-border bg-card p-8 text-center backdrop-blur-sm">
       <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500/15">
         <CheckCircle2 className="h-7 w-7 text-emerald-400" />
       </div>
-      <h2 className="mt-5 text-xl font-semibold text-white">{title}</h2>
-      <p className="mt-2 text-sm text-surface-400">{message}</p>
+      <h2 className="mt-5 text-xl font-semibold text-foreground">{title}</h2>
+      <p className="mt-2 text-sm text-muted-foreground">{message}</p>
       <button
         type="button"
         onClick={onAction}
@@ -140,6 +142,7 @@ function SuccessCard({
 
 export default function AuthPage() {
   const navigate = useNavigate();
+  const { theme, toggleTheme } = useTheme();
   const [mode, setMode] = useState<AuthMode>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -207,8 +210,8 @@ export default function AuthPage() {
   return (
     <div className="flex min-h-screen">
       {/* Left — branding panel (desktop) */}
-      <div className="relative hidden w-[45%] overflow-hidden bg-surface-900 lg:flex lg:flex-col lg:justify-between">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary-950 via-surface-900 to-surface-950" />
+      <div className="relative hidden w-[45%] overflow-hidden bg-card lg:flex lg:flex-col lg:justify-between">
+        <div className="absolute inset-0 bg-gradient-to-br from-auth-from via-auth-via to-auth-to" />
         <div className="absolute -left-24 top-1/4 h-72 w-72 rounded-full bg-primary-600/10 blur-3xl" />
         <div className="absolute -right-16 bottom-1/4 h-56 w-56 rounded-full bg-primary-500/10 blur-2xl" />
         <div
@@ -222,7 +225,7 @@ export default function AuthPage() {
         <div className="relative z-10 flex flex-col justify-between p-10 xl:p-14">
           <div>
             <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary-600 shadow-lg shadow-primary-600/30">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary-600 shadow-lg shadow-primary">
                 <Brain className="h-6 w-6 text-white" />
               </div>
               <p className="text-xs font-semibold tracking-widest text-primary-400 uppercase">
@@ -230,49 +233,60 @@ export default function AuthPage() {
               </p>
             </div>
 
-            <h1 className="mt-10 max-w-md text-3xl leading-tight font-bold tracking-tight text-white xl:text-4xl">
+            <h1 className="mt-10 max-w-md text-3xl leading-tight font-bold tracking-tight text-foreground xl:text-4xl">
               Multi Agent Financial Research System
             </h1>
-            <p className="mt-4 max-w-sm text-sm leading-relaxed text-surface-400">
+            <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted-foreground">
               Orchestrate specialized AI agents to parse documents, extract metrics,
               detect red flags, and generate institutional-grade research reports.
             </p>
           </div>
 
           <div className="mt-12">
-            <p className="mb-4 text-xs font-semibold tracking-widest text-surface-500 uppercase">
+            <p className="mb-4 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
               Specialized Agents
             </p>
             <div className="grid grid-cols-2 gap-3">
               {agents.map(({ icon: Icon, label }) => (
                 <div
                   key={label}
-                  className="flex items-center gap-2.5 rounded-lg border border-surface-700/40 bg-surface-800/30 px-3 py-2.5 backdrop-blur-sm"
+                  className="flex items-center gap-2.5 rounded-lg border border-border bg-muted px-3 py-2.5 backdrop-blur-sm"
                 >
                   <Icon className="h-4 w-4 shrink-0 text-primary-400" />
-                  <span className="text-xs font-medium text-surface-300">{label}</span>
+                  <span className="text-xs font-medium text-foreground-muted">{label}</span>
                 </div>
               ))}
             </div>
           </div>
 
-          <p className="mt-10 text-xs text-surface-600">
+          <p className="mt-10 text-xs text-muted-foreground">
             Secure · Compliant · AI-Powered Financial Intelligence
           </p>
         </div>
       </div>
 
       {/* Right — form panel */}
-      <div className="flex flex-1 flex-col items-center justify-center bg-surface-950 px-4 py-10 sm:px-8">
+      <div className="relative flex flex-1 flex-col items-center justify-center bg-background px-4 py-10 sm:px-8">
+
+        {/* Theme Toggle Button */}
+        <button
+          type="button"
+          onClick={toggleTheme}
+          aria-label="Toggle theme"
+          className="absolute right-4 top-4 rounded-lg p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground-muted sm:right-6 sm:top-6"
+        >
+          {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+        </button>
+
         {/* Mobile header */}
         <div className="mb-8 w-full max-w-[420px] text-center lg:hidden">
           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-primary-600">
             <Brain className="h-6 w-6 text-white" />
           </div>
-          <h1 className="mt-4 text-lg font-bold leading-snug text-white">
+          <h1 className="mt-4 text-lg font-bold leading-snug text-foreground">
             Multi Agent Financial Research System
           </h1>
-          <p className="mt-2 text-xs text-surface-500">
+          <p className="mt-2 text-xs text-muted-foreground">
             AI-powered document analysis &amp; research
           </p>
         </div>
@@ -284,7 +298,7 @@ export default function AuthPage() {
               message={
                 <>
                   We sent password reset instructions to{' '}
-                  <span className="font-medium text-surface-200">{email}</span>
+                  <span className="font-medium text-foreground-muted">{email}</span>
                 </>
               }
               actionLabel="Back to sign in"
@@ -295,7 +309,7 @@ export default function AuthPage() {
               title="Account created"
               message={
                 <>
-                  Welcome, <span className="font-medium text-surface-200">{fullName}</span>.
+                  Welcome, <span className="font-medium text-foreground-muted">{fullName}</span>.
                   Your account is ready — you are now signed in.
                 </>
               }
@@ -305,35 +319,33 @@ export default function AuthPage() {
           ) : (
             <div
               key={mode}
-              className="rounded-2xl border border-surface-700/60 bg-surface-900/50 p-8 shadow-2xl shadow-black/20 backdrop-blur-sm"
+              className="rounded-2xl border border-border bg-card p-8 shadow-2xl shadow-elevation backdrop-blur-sm"
             >
               <div className="mb-7">
-                <h2 className="text-xl font-semibold text-white">{config.title}</h2>
-                <p className="mt-1.5 text-sm text-surface-400">{config.subtitle}</p>
+                <h2 className="text-xl font-semibold text-foreground">{config.title}</h2>
+                <p className="mt-1.5 text-sm text-muted-foreground">{config.subtitle}</p>
               </div>
 
               {/* Tab switcher — Sign In / Create Account */}
               {mode !== 'forgot' && (
-                <div className="mb-6 flex rounded-xl border border-surface-700/60 bg-surface-800/40 p-1">
+                <div className="mb-6 flex rounded-xl border border-border bg-muted p-1">
                   <button
                     type="button"
                     onClick={() => switchMode('login')}
-                    className={`flex-1 rounded-lg py-2.5 text-sm font-medium transition-all duration-200 ${
-                      mode === 'login'
+                    className={`flex-1 rounded-lg py-2.5 text-sm font-medium transition-all duration-200 ${mode === 'login'
                         ? 'bg-primary-600 text-white shadow-sm'
-                        : 'text-surface-400 hover:text-surface-200'
-                    }`}
+                        : 'text-muted-foreground hover:text-foreground-muted'
+                      }`}
                   >
                     Sign In
                   </button>
                   <button
                     type="button"
                     onClick={() => switchMode('register')}
-                    className={`flex-1 rounded-lg py-2.5 text-sm font-medium transition-all duration-200 ${
-                      mode === 'register'
+                    className={`flex-1 rounded-lg py-2.5 text-sm font-medium transition-all duration-200 ${mode === 'register'
                         ? 'bg-primary-600 text-white shadow-sm'
-                        : 'text-surface-400 hover:text-surface-200'
-                    }`}
+                        : 'text-muted-foreground hover:text-foreground-muted'
+                      }`}
                   >
                     Create Account
                   </button>
@@ -344,7 +356,7 @@ export default function AuthPage() {
                 <button
                   type="button"
                   onClick={() => switchMode('login')}
-                  className="mb-6 inline-flex items-center gap-1.5 text-sm text-surface-400 transition-colors hover:text-surface-200"
+                  className="mb-6 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground-muted"
                 >
                   <ArrowLeft className="h-3.5 w-3.5" />
                   Back to sign in
@@ -416,7 +428,7 @@ export default function AuthPage() {
                         onChange={(e) => setRememberMe(e.target.checked)}
                         className="h-4 w-4 rounded border-surface-600 accent-primary-500"
                       />
-                      <span className="text-xs text-surface-400">Remember me</span>
+                      <span className="text-xs text-muted-foreground">Remember me</span>
                     </label>
                     <button
                       type="button"
@@ -437,7 +449,7 @@ export default function AuthPage() {
                     (mode !== 'forgot' && !password) ||
                     !email.trim()
                   }
-                  className="mt-2 w-full rounded-xl bg-primary-600 py-3 text-sm font-semibold text-white shadow-lg shadow-primary-600/25 transition-all hover:bg-primary-500 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="mt-2 w-full rounded-xl bg-primary-600 py-3 text-sm font-semibold text-white shadow-lg shadow-primary transition-all hover:bg-primary-500 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {isLoading ? (
                     <span className="flex items-center justify-center gap-2">
@@ -460,7 +472,7 @@ export default function AuthPage() {
               </form>
 
               {mode === 'login' && (
-                <p className="mt-6 text-center text-sm text-surface-400">
+                <p className="mt-6 text-center text-sm text-muted-foreground">
                   Don&apos;t have an account?{' '}
                   <button
                     type="button"
@@ -473,7 +485,7 @@ export default function AuthPage() {
               )}
 
               {mode === 'register' && (
-                <p className="mt-6 text-center text-sm text-surface-400">
+                <p className="mt-6 text-center text-sm text-muted-foreground">
                   Already have an account?{' '}
                   <button
                     type="button"
@@ -486,7 +498,7 @@ export default function AuthPage() {
               )}
 
               {mode === 'forgot' && (
-                <p className="mt-6 text-center text-xs text-surface-500">
+                <p className="mt-6 text-center text-xs text-muted-foreground">
                   Didn&apos;t receive the email? Check your spam folder or{' '}
                   <button
                     type="button"
@@ -500,13 +512,13 @@ export default function AuthPage() {
             </div>
           )}
 
-          <p className="mt-6 text-center text-xs text-surface-600">
+          <p className="mt-6 text-center text-xs text-muted-foreground">
             By continuing, you agree to our{' '}
-            <Link to="/login" className="text-surface-500 hover:text-surface-400">
+            <Link to="/login" className="text-muted-foreground hover:text-muted-foreground">
               Terms of Service
             </Link>{' '}
             and{' '}
-            <Link to="/login" className="text-surface-500 hover:text-surface-400">
+            <Link to="/login" className="text-muted-foreground hover:text-muted-foreground">
               Privacy Policy
             </Link>
           </p>

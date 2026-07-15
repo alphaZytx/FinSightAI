@@ -19,7 +19,7 @@ export default function WelcomeBanner({ userName = 'Alex' }: WelcomeBannerProps)
           <h1 className="mt-1 text-2xl font-bold text-white md:text-3xl">
             {getGreeting()}, {userName}
           </h1>
-          <p className="mt-2 max-w-lg text-sm text-surface-300">
+          <p className="mt-2 max-w-lg text-sm text-foreground-muted">
             Your financial intelligence workspace is ready. Upload documents, run AI analysis, and generate insights.
           </p>
         </div>

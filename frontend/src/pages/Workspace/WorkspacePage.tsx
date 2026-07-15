@@ -1,5 +1,5 @@
 import { type FormEvent, useEffect, useState } from 'react';
-import { Upload, FileText, FileUp, Play, CheckCircle2, AlertCircle, FileSearch, Sigma, ShieldAlert, GitCompare, Trash2, Zap, Brain, ChevronDown, ChevronUp, TrendingUp, TrendingDown, Minus, BarChart3, PieChart, DollarSign, Landmark, Banknote, Activity } from 'lucide-react';
+import { Upload, FileText, FileUp, Play, CheckCircle2, AlertCircle, FileSearch, Sigma, ShieldAlert, GitCompare, Trash2, Zap, Brain, ChevronDown, ChevronUp, PieChart, DollarSign, Landmark, Banknote, Activity } from 'lucide-react';
 import { Card, Badge } from '../../components/Common';
 import { uploadDocument, ingestDocument, listDocuments, deleteDocument, type DocumentUploadResponse, type IngestResponse } from '../../services/api/documents';
 import { useWorkspaceStore } from '../../store/workspaceStore';
@@ -72,7 +72,7 @@ function MetricCard({ metric }: { metric: AnalysisMetric }) {
   const confBg = conf >= 0.75 ? 'bg-emerald-500/10' : conf >= 0.5 ? 'bg-amber-500/10' : 'bg-red-500/10';
 
   return (
-    <div className="rounded-lg border border-surface-700/30 bg-surface-800/40 p-3 hover:border-surface-600/50 transition-colors">
+    <div className="rounded-lg border border-border bg-muted p-3 hover:border-surface-600/50 transition-colors">
       <div className="flex items-start justify-between gap-2">
         <p className="text-xs font-medium text-primary-300 leading-tight">{metric.display_name || metric.metric_name}</p>
         <span className={`shrink-0 rounded px-1.5 py-0.5 text-[10px] font-medium ${confBg} ${confColor}`}>
@@ -81,8 +81,8 @@ function MetricCard({ metric }: { metric: AnalysisMetric }) {
       </div>
       <p className="mt-1.5 text-lg font-bold text-white leading-none">{formatMetric(metric.value, metric.unit)}</p>
       <div className="mt-2 flex items-center justify-between text-[10px]">
-        <span className="text-surface-500">{metric.period || 'Not stated'}</span>
-        <span className="text-surface-500">p. {metric.source_page ?? 'n/a'}</span>
+        <span className="text-muted-foreground">{metric.period || 'Not stated'}</span>
+        <span className="text-muted-foreground">p. {metric.source_page ?? 'n/a'}</span>
       </div>
       {metric.extraction_method && (
         <div className="mt-1.5">
@@ -102,23 +102,23 @@ function MetricSection({ categoryKey, metrics, defaultOpen = true }: { categoryK
   const Icon = cat.icon;
 
   return (
-    <div className="rounded-lg border border-surface-700/40 bg-surface-900/40 overflow-hidden">
+    <div className="rounded-lg border border-border bg-card overflow-hidden">
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="flex w-full items-center gap-3 p-4 text-left hover:bg-surface-800/40 transition-colors"
+        className="flex w-full items-center gap-3 p-4 text-left hover:bg-muted transition-colors"
       >
         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary-500/10">
           <Icon className="h-4 w-4 text-primary-400" />
         </div>
         <div className="flex-1">
-          <p className="text-sm font-semibold text-surface-100">{cat.label}</p>
-          <p className="text-[10px] text-surface-500">{metrics.length} metric{metrics.length !== 1 ? 's' : ''} extracted</p>
+          <p className="text-sm font-semibold text-foreground">{cat.label}</p>
+          <p className="text-[10px] text-muted-foreground">{metrics.length} metric{metrics.length !== 1 ? 's' : ''} extracted</p>
         </div>
-        {open ? <ChevronUp className="h-4 w-4 text-surface-500" /> : <ChevronDown className="h-4 w-4 text-surface-500" />}
+        {open ? <ChevronUp className="h-4 w-4 text-muted-foreground" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" />}
       </button>
       {open && (
-        <div className="border-t border-surface-700/30 p-4">
+        <div className="border-t border-border p-4">
           <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
             {metrics.map((m) => <MetricCard key={m._id} metric={m} />)}
           </div>
@@ -131,7 +131,7 @@ function MetricSection({ categoryKey, metrics, defaultOpen = true }: { categoryK
 function ModelSelector({ value, onChange }: { value: LLMProvider; onChange: (v: LLMProvider) => void }) {
   return (
     <div>
-      <label className="mb-1.5 block text-xs font-medium text-surface-400">AI Model</label>
+      <label className="mb-1.5 block text-xs font-medium text-muted-foreground">AI Model</label>
       <div className="grid grid-cols-2 gap-2">
         <button
           type="button"
@@ -139,17 +139,17 @@ function ModelSelector({ value, onChange }: { value: LLMProvider; onChange: (v: 
           className={`flex items-center gap-2.5 rounded-lg border p-3 text-left transition-all ${
             value === 'groq'
               ? 'border-amber-500/60 bg-amber-500/10 shadow-sm shadow-amber-500/10'
-              : 'border-surface-700 bg-surface-800/60 hover:border-surface-600'
+              : 'border-border bg-muted hover:border-surface-600'
           }`}
         >
           <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
             value === 'groq' ? 'bg-amber-500/20' : 'bg-surface-700/60'
           }`}>
-            <Zap className={`h-4 w-4 ${value === 'groq' ? 'text-amber-400' : 'text-surface-400'}`} />
+            <Zap className={`h-4 w-4 ${value === 'groq' ? 'text-amber-400' : 'text-muted-foreground'}`} />
           </div>
           <div className="min-w-0">
-            <p className={`text-sm font-semibold ${value === 'groq' ? 'text-amber-300' : 'text-surface-300'}`}>Groq</p>
-            <p className="text-[10px] leading-tight text-surface-500">Fast · Simple tasks</p>
+            <p className={`text-sm font-semibold ${value === 'groq' ? 'text-amber-300' : 'text-foreground-muted'}`}>Groq</p>
+            <p className="text-[10px] leading-tight text-muted-foreground">Fast · Simple tasks</p>
           </div>
         </button>
         <button
@@ -158,17 +158,17 @@ function ModelSelector({ value, onChange }: { value: LLMProvider; onChange: (v: 
           className={`flex items-center gap-2.5 rounded-lg border p-3 text-left transition-all ${
             value === 'google'
               ? 'border-blue-500/60 bg-blue-500/10 shadow-sm shadow-blue-500/10'
-              : 'border-surface-700 bg-surface-800/60 hover:border-surface-600'
+              : 'border-border bg-muted hover:border-surface-600'
           }`}
         >
           <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
             value === 'google' ? 'bg-blue-500/20' : 'bg-surface-700/60'
           }`}>
-            <Brain className={`h-4 w-4 ${value === 'google' ? 'text-blue-400' : 'text-surface-400'}`} />
+            <Brain className={`h-4 w-4 ${value === 'google' ? 'text-blue-400' : 'text-muted-foreground'}`} />
           </div>
           <div className="min-w-0">
-            <p className={`text-sm font-semibold ${value === 'google' ? 'text-blue-300' : 'text-surface-300'}`}>Google Gemini</p>
-            <p className="text-[10px] leading-tight text-surface-500">Deep · Research & analysis</p>
+            <p className={`text-sm font-semibold ${value === 'google' ? 'text-blue-300' : 'text-foreground-muted'}`}>Google Gemini</p>
+            <p className="text-[10px] leading-tight text-muted-foreground">Deep · Research & analysis</p>
           </div>
         </button>
       </div>
@@ -188,14 +188,14 @@ function PipelineStep({ label, icon: Icon, status, detail }: {
     <div className={`flex items-center gap-3 rounded-lg border p-3 transition-all ${
       successful ? 'border-emerald-500/30 bg-emerald-500/5' :
       failed ? 'border-red-500/30 bg-red-500/5' :
-      'border-surface-700/40 bg-surface-900/40'
+      'border-border bg-card'
     }`}>
       <Icon className={`h-5 w-5 shrink-0 ${
-        successful ? 'text-emerald-400' : failed ? 'text-red-400' : 'text-surface-500'
+        successful ? 'text-emerald-400' : failed ? 'text-red-400' : 'text-muted-foreground'
       }`} />
       <div className="flex-1 min-w-0">
-        <p className={`text-sm font-medium ${successful ? 'text-emerald-300' : failed ? 'text-red-300' : 'text-surface-300'}`}>{label}</p>
-        {detail && <p className="text-xs text-surface-400 truncate">{detail}</p>}
+        <p className={`text-sm font-medium ${successful ? 'text-emerald-300' : failed ? 'text-red-300' : 'text-foreground-muted'}`}>{label}</p>
+        {detail && <p className="text-xs text-muted-foreground truncate">{detail}</p>}
       </div>
       {successful && <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />}
       {failed && <AlertCircle className="h-4 w-4 text-red-400 shrink-0" />}
@@ -237,21 +237,21 @@ function PipelineResults({ result }: { result: IngestResponse }) {
       {/* Extraction Summary Stats */}
       {allMetrics.length > 0 && (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <div className="rounded-lg border border-surface-700/30 bg-surface-800/40 p-3 text-center">
+          <div className="rounded-lg border border-border bg-muted p-3 text-center">
             <p className="text-2xl font-bold text-white">{allMetrics.length}</p>
-            <p className="text-[10px] font-medium text-surface-400 uppercase tracking-wider">Total Metrics</p>
+            <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Total Metrics</p>
           </div>
-          <div className="rounded-lg border border-surface-700/30 bg-surface-800/40 p-3 text-center">
+          <div className="rounded-lg border border-border bg-muted p-3 text-center">
             <p className="text-2xl font-bold text-emerald-400">{allMetrics.filter(m => (m.confidence ?? 0) >= 0.75).length}</p>
-            <p className="text-[10px] font-medium text-surface-400 uppercase tracking-wider">High Confidence</p>
+            <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">High Confidence</p>
           </div>
-          <div className="rounded-lg border border-surface-700/30 bg-surface-800/40 p-3 text-center">
+          <div className="rounded-lg border border-border bg-muted p-3 text-center">
             <p className="text-2xl font-bold text-blue-400">{allMetrics.filter(m => m.extraction_method === 'derived_ratio').length}</p>
-            <p className="text-[10px] font-medium text-surface-400 uppercase tracking-wider">Derived Ratios</p>
+            <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Derived Ratios</p>
           </div>
-          <div className="rounded-lg border border-surface-700/30 bg-surface-800/40 p-3 text-center">
+          <div className="rounded-lg border border-border bg-muted p-3 text-center">
             <p className="text-2xl font-bold text-amber-400">{new Set(allMetrics.map(m => m.period).filter(Boolean)).size}</p>
-            <p className="text-[10px] font-medium text-surface-400 uppercase tracking-wider">Periods Covered</p>
+            <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Periods Covered</p>
           </div>
         </div>
       )}
@@ -259,15 +259,15 @@ function PipelineResults({ result }: { result: IngestResponse }) {
       {/* Categorized Metrics */}
       {allMetrics.length > 0 && (
         <div className="space-y-3">
-          <h4 className="text-xs font-semibold tracking-widest text-surface-400 uppercase">Extracted Financial Data</h4>
+          <h4 className="text-xs font-semibold tracking-widest text-muted-foreground uppercase">Extracted Financial Data</h4>
           {Object.entries(METRIC_CATEGORIES).map(([key]) =>
             categorized[key]?.length ? (
               <MetricSection key={key} categoryKey={key} metrics={categorized[key]} defaultOpen={key === 'income' || key === 'margins'} />
             ) : null
           )}
           {uncategorized.length > 0 && (
-            <div className="rounded-lg border border-surface-700/40 bg-surface-900/40 p-4">
-              <p className="mb-3 text-sm font-semibold text-surface-100">Other Financial Data</p>
+            <div className="rounded-lg border border-border bg-card p-4">
+              <p className="mb-3 text-sm font-semibold text-foreground">Other Financial Data</p>
               <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
                 {uncategorized.map((m) => <MetricCard key={m._id} metric={m} />)}
               </div>
@@ -280,12 +280,12 @@ function PipelineResults({ result }: { result: IngestResponse }) {
       {allFlags.length > 0 && (
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <h4 className="text-xs font-semibold tracking-widest text-surface-400 uppercase">Risk Signals</h4>
+            <h4 className="text-xs font-semibold tracking-widest text-muted-foreground uppercase">Risk Signals</h4>
             <Badge variant="error">{allFlags.length} detected</Badge>
           </div>
           <div className="space-y-2">
             {allFlags.map((flag) => (
-              <div key={flag._id} className="rounded-lg border border-surface-700/30 bg-surface-800/40 p-4">
+              <div key={flag._id} className="rounded-lg border border-border bg-muted p-4">
                 <div className="flex items-start gap-3">
                   <div className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${
                     flag.severity === 'critical' ? 'bg-red-500/20' :
@@ -295,23 +295,23 @@ function PipelineResults({ result }: { result: IngestResponse }) {
                     <ShieldAlert className={`h-3.5 w-3.5 ${
                       flag.severity === 'critical' ? 'text-red-400' :
                       flag.severity === 'high' ? 'text-orange-400' :
-                      flag.severity === 'medium' ? 'text-amber-400' : 'text-surface-400'
+                      flag.severity === 'medium' ? 'text-amber-400' : 'text-muted-foreground'
                     }`} />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                       <Badge variant={flag.severity === 'critical' || flag.severity === 'high' ? 'error' : flag.severity === 'medium' ? 'warning' : 'neutral'}>{flag.severity}</Badge>
-                      <span className="text-xs text-surface-400">{flag.company_name}</span>
-                      <span className="text-xs text-surface-500">· {flag.category}</span>
+                      <span className="text-xs text-muted-foreground">{flag.company_name}</span>
+                      <span className="text-xs text-muted-foreground">· {flag.category}</span>
                     </div>
-                    <p className="text-sm font-medium text-surface-200">{flag.title}</p>
-                    <p className="mt-1 text-xs text-surface-400 leading-relaxed">{flag.explanation}</p>
+                    <p className="text-sm font-medium text-foreground-muted">{flag.title}</p>
+                    <p className="mt-1 text-xs text-muted-foreground leading-relaxed">{flag.explanation}</p>
                     {flag.evidence && (
-                      <p className="mt-2 rounded border border-surface-700/30 bg-surface-900/40 p-2 text-[10px] text-surface-500 italic leading-relaxed line-clamp-3">
+                      <p className="mt-2 rounded border border-border bg-card p-2 text-[10px] text-muted-foreground italic leading-relaxed line-clamp-3">
                         "{flag.evidence}"
                       </p>
                     )}
-                    <div className="mt-2 flex items-center gap-3 text-[10px] text-surface-500">
+                    <div className="mt-2 flex items-center gap-3 text-[10px] text-muted-foreground">
                       <span>p. {flag.source_page ?? 'n/a'}</span>
                       <span>Confidence: {Math.round((flag.confidence ?? 0) * 100)}%</span>
                       <span>{flag.detection_method}</span>
@@ -423,7 +423,7 @@ function AnalysisProgressOverlay({ companyName, isBusy }: { companyName: string,
   });
 
   return (
-    <div className={`fixed inset-0 z-50 flex items-center justify-center bg-surface-950/80 backdrop-blur-sm p-4 transition-all duration-500 ${allDone && !isBusy ? 'opacity-0' : 'opacity-100'}`}>
+    <div className={`fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4 transition-all duration-500 ${allDone && !isBusy ? 'opacity-0' : 'opacity-100'}`}>
       <div className="w-full max-w-md shadow-2xl animate-in fade-in zoom-in duration-300">
         <ResearchProgress steps={progressSteps} companyName={companyName} />
       </div>
@@ -522,7 +522,7 @@ export default function WorkspacePage() {
       <AnalysisProgressOverlay isBusy={busy} companyName={uploaded?.company_name || companyName || 'Company'} />
       <div>
         <h1 className="text-2xl font-bold text-white">Workspace</h1>
-        <p className="mt-1 text-sm text-surface-400">Upload and analyze financial documents</p>
+        <p className="mt-1 text-sm text-muted-foreground">Upload and analyze financial documents</p>
       </div>
 
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
@@ -530,31 +530,31 @@ export default function WorkspacePage() {
         <Card title="Upload Documents" subtitle="Ingest a financial filing">
           <form onSubmit={submit} className="space-y-4">
             <div>
-              <label className="mb-1.5 block text-xs font-medium text-surface-400">Company Name</label>
+              <label className="mb-1.5 block text-xs font-medium text-muted-foreground">Company Name</label>
               <input
                 value={companyName}
                 onChange={(e) => setCompanyName(e.target.value)}
                 required
                 placeholder="Company Ltd"
-                className="w-full rounded-lg border border-surface-700 bg-surface-800 px-4 py-2.5 text-sm text-surface-100 placeholder:text-surface-500 focus:border-primary-500 focus:outline-none"
+                className="w-full rounded-lg border border-border bg-muted px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary-500 focus:outline-none"
               />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="mb-1.5 block text-xs font-medium text-surface-400">Fiscal Year</label>
+                <label className="mb-1.5 block text-xs font-medium text-muted-foreground">Fiscal Year</label>
                 <input
                   value={fiscalYear}
                   onChange={(e) => setFiscalYear(e.target.value)}
                   required
-                  className="w-full rounded-lg border border-surface-700 bg-surface-800 px-4 py-2.5 text-sm text-surface-100 focus:border-primary-500 focus:outline-none"
+                  className="w-full rounded-lg border border-border bg-muted px-4 py-2.5 text-sm text-foreground focus:border-primary-500 focus:outline-none"
                 />
               </div>
               <div>
-                <label className="mb-1.5 block text-xs font-medium text-surface-400">Document Type</label>
+                <label className="mb-1.5 block text-xs font-medium text-muted-foreground">Document Type</label>
                 <select
                   value={documentType}
                   onChange={(e) => setDocumentType(e.target.value)}
-                  className="w-full rounded-lg border border-surface-700 bg-surface-800 px-4 py-2.5 text-sm text-surface-100 focus:border-primary-500 focus:outline-none"
+                  className="w-full rounded-lg border border-border bg-muted px-4 py-2.5 text-sm text-foreground focus:border-primary-500 focus:outline-none"
                 >
                   <option value="annual_report">Annual Report</option>
                   <option value="10_k">10-K</option>
@@ -568,13 +568,13 @@ export default function WorkspacePage() {
             <ModelSelector value={llmProvider} onChange={setLlmProvider} />
 
             <div
-              className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-surface-600 bg-surface-900/40 py-10 transition-colors hover:border-primary-500/40 hover:bg-surface-800/40"
+              className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-surface-600 bg-card py-10 transition-colors hover:border-primary-500/40 hover:bg-muted"
             >
-              <Upload className="h-8 w-8 text-surface-500" />
-              <p className="mt-3 text-sm font-medium text-surface-200">
+              <Upload className="h-8 w-8 text-muted-foreground" />
+              <p className="mt-3 text-sm font-medium text-foreground-muted">
                 {file ? file.name : 'Select a PDF file'}
               </p>
-              {file && <p className="mt-1 text-xs text-surface-500">{(file.size / (1024 * 1024)).toFixed(2)} MB</p>}
+              {file && <p className="mt-1 text-xs text-muted-foreground">{(file.size / (1024 * 1024)).toFixed(2)} MB</p>}
               <label className="mt-3 cursor-pointer rounded-lg bg-primary-600 px-4 py-2 text-sm font-medium text-white hover:bg-primary-500 transition-colors">
                 Browse Files
                 <input
@@ -593,19 +593,19 @@ export default function WorkspacePage() {
                 onChange={(e) => setAutoIngest(e.target.checked)}
                 className="h-4 w-4 rounded accent-primary-500"
               />
-              <span className="text-xs text-surface-400">Run extraction, risk scan, and comparison after upload</span>
+              <span className="text-xs text-muted-foreground">Run extraction, risk scan, and comparison after upload</span>
             </label>
 
             <button
               type="submit"
               disabled={busy || !file || !activeWorkspaceId}
-              className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-primary-600 px-4 py-2.5 text-sm font-medium text-white shadow-lg shadow-primary-600/20 hover:bg-primary-500 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+              className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-primary-600 px-4 py-2.5 text-sm font-medium text-white shadow-lg shadow-primary hover:bg-primary-500 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
             >
               <FileUp className="h-4 w-4" />
               {busy ? 'Processing…' : autoIngest ? 'Upload & Analyze' : 'Upload Document'}
             </button>
 
-            {!activeWorkspaceId && <p className="text-xs text-surface-500 text-center">Preparing workspace…</p>}
+            {!activeWorkspaceId && <p className="text-xs text-muted-foreground text-center">Preparing workspace…</p>}
             {error && <p className="text-sm text-red-400">{error}</p>}
           </form>
         </Card>
@@ -616,11 +616,11 @@ export default function WorkspacePage() {
             <PipelineResults result={ingestResult} />
           ) : uploaded && !ingestResult ? (
             <div className="space-y-4">
-              <div className="flex items-center gap-3 rounded-lg border border-surface-700/40 p-4">
+              <div className="flex items-center gap-3 rounded-lg border border-border p-4">
                 <FileText className="h-8 w-8 text-primary-400" />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-surface-100 truncate">{uploaded.file_name}</p>
-                  <p className="text-xs text-surface-400">{uploaded.company_name} · FY {uploaded.fiscal_year} · {uploaded.status}</p>
+                  <p className="text-sm font-medium text-foreground truncate">{uploaded.file_name}</p>
+                  <p className="text-xs text-muted-foreground">{uploaded.company_name} · FY {uploaded.fiscal_year} · {uploaded.status}</p>
                 </div>
               </div>
               <button
@@ -635,9 +635,9 @@ export default function WorkspacePage() {
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center py-16 text-center">
-              <FileUp className="h-10 w-10 text-surface-500" />
-              <h3 className="mt-4 text-sm font-medium text-surface-200">Analysis will appear here</h3>
-              <p className="mt-1 max-w-sm text-xs text-surface-500">
+              <FileUp className="h-10 w-10 text-muted-foreground" />
+              <h3 className="mt-4 text-sm font-medium text-foreground-muted">Analysis will appear here</h3>
+              <p className="mt-1 max-w-sm text-xs text-muted-foreground">
                 After ingestion, review processing status, extracted financial evidence, risk signals, and peer comparison coverage.
               </p>
             </div>
@@ -646,11 +646,11 @@ export default function WorkspacePage() {
       </div>
 
       {/* Document Library */}
-      <div className="rounded-xl border border-surface-700/60 bg-surface-900/50 p-6">
+      <div className="rounded-xl border border-border bg-card p-6">
         <div className="mb-4 flex items-start justify-between gap-4">
           <div>
             <h2 className="text-base font-semibold text-white">Document Library</h2>
-            <p className="mt-0.5 text-xs text-surface-400">All uploaded documents in this workspace</p>
+            <p className="mt-0.5 text-xs text-muted-foreground">All uploaded documents in this workspace</p>
           </div>
           {documents.length > 0 && (
             <button
@@ -680,8 +680,8 @@ export default function WorkspacePage() {
           </div>
         ) : documents.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-10 text-center">
-            <FileText className="h-8 w-8 text-surface-600" />
-            <p className="mt-3 text-sm text-surface-500">No documents uploaded yet</p>
+            <FileText className="h-8 w-8 text-muted-foreground" />
+            <p className="mt-3 text-sm text-muted-foreground">No documents uploaded yet</p>
           </div>
         ) : (
           <div className="divide-y divide-surface-700/40">
@@ -689,13 +689,13 @@ export default function WorkspacePage() {
               <div key={doc._id} className="flex items-center gap-3 py-3 first:pt-0 last:pb-0">
                 <FileText className="h-5 w-5 shrink-0 text-primary-400" />
                 <div className="flex-1 min-w-0">
-                  <p className="truncate text-sm font-medium text-surface-100">{doc.file_name}</p>
-                  <p className="text-xs text-surface-400">{doc.company_name} · FY {doc.fiscal_year}</p>
+                  <p className="truncate text-sm font-medium text-foreground">{doc.file_name}</p>
+                  <p className="text-xs text-muted-foreground">{doc.company_name} · FY {doc.fiscal_year}</p>
                 </div>
                 <span className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-medium ${
                   doc.status === 'indexed' ? 'bg-emerald-500/15 text-emerald-400' :
                   doc.status === 'uploaded' ? 'bg-primary-500/15 text-primary-400' :
-                  'bg-surface-700/50 text-surface-400'
+                  'bg-surface-700/50 text-muted-foreground'
                 }`}>
                   {doc.status}
                 </span>
@@ -703,7 +703,7 @@ export default function WorkspacePage() {
                   type="button"
                   onClick={() => deleteDoc(doc._id)}
                   disabled={deletingId === doc._id}
-                  className="shrink-0 rounded-lg p-1.5 text-surface-500 transition-colors hover:bg-red-500/10 hover:text-red-400 disabled:opacity-40"
+                  className="shrink-0 rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-red-500/10 hover:text-red-400 disabled:opacity-40"
                   aria-label="Delete document"
                 >
                   {deletingId === doc._id ? (

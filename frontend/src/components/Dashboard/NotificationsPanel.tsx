@@ -23,7 +23,7 @@ export default function NotificationsPanel({ notifications = mockNotifications }
       title="Notifications"
       subtitle={`${unreadCount} unread`}
       action={
-        <Bell className="h-4 w-4 text-surface-400" />
+        <Bell className="h-4 w-4 text-muted-foreground" />
       }
     >
       <div className="space-y-2">
@@ -35,16 +35,16 @@ export default function NotificationsPanel({ notifications = mockNotifications }
               key={notification.id}
               className={`flex items-start gap-3 rounded-lg p-3 transition-colors ${
                 notification.read
-                  ? 'bg-surface-900/20'
+                  ? 'bg-card'
                   : 'border border-primary-500/20 bg-primary-500/5'
               }`}
             >
               <Icon className={`mt-0.5 h-4 w-4 shrink-0 ${config.color}`} />
               <div className="min-w-0 flex-1">
-                <p className={`text-sm ${notification.read ? 'text-surface-400' : 'text-surface-100'}`}>
+                <p className={`text-sm ${notification.read ? 'text-muted-foreground' : 'text-foreground'}`}>
                   {notification.message}
                 </p>
-                <p className="mt-0.5 text-xs text-surface-500">
+                <p className="mt-0.5 text-xs text-muted-foreground">
                   {formatRelativeTime(notification.timestamp)}
                 </p>
               </div>

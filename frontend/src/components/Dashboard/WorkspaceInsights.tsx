@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FileText, Sparkles, ChevronDown, ChevronUp, DollarSign, PieChart, Landmark, Banknote, Activity, ShieldAlert } from 'lucide-react';
 import { Card, Badge } from '../Common';
-import type { WorkspaceAnalysis, AnalysisMetric, AnalysisRedFlag } from '../../types';
+import type { WorkspaceAnalysis, AnalysisMetric } from '../../types';
 
 function formatMetric(value: number | null, unit?: string | null) {
   if (value === null || value === undefined) return 'Not reported';
@@ -67,27 +67,27 @@ function MetricSection({ categoryKey, metrics, defaultOpen = false }: { category
   const Icon = cat.icon;
 
   return (
-    <div className="rounded-lg border border-surface-700/40 bg-surface-900/40 overflow-hidden mb-3">
+    <div className="rounded-lg border border-border bg-card overflow-hidden mb-3">
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="flex w-full items-center gap-3 p-4 text-left hover:bg-surface-800/40 transition-colors"
+        className="flex w-full items-center gap-3 p-4 text-left hover:bg-muted transition-colors"
       >
         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary-500/10">
           <Icon className="h-4 w-4 text-primary-400" />
         </div>
         <div className="flex-1">
-          <p className="text-sm font-semibold text-surface-100">{cat.label}</p>
+          <p className="text-sm font-semibold text-foreground">{cat.label}</p>
         </div>
         <Badge variant="neutral">{metrics.length}</Badge>
-        {open ? <ChevronUp className="h-4 w-4 text-surface-500 ml-2" /> : <ChevronDown className="h-4 w-4 text-surface-500 ml-2" />}
+        {open ? <ChevronUp className="h-4 w-4 text-muted-foreground ml-2" /> : <ChevronDown className="h-4 w-4 text-muted-foreground ml-2" />}
       </button>
       {open && (
-        <div className="border-t border-surface-700/30">
+        <div className="border-t border-border">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-surface-800/40">
-                <tr className="border-b border-surface-700/40 text-left text-xs text-surface-400 uppercase tracking-wider">
+              <thead className="bg-muted">
+                <tr className="border-b border-border text-left text-xs text-muted-foreground uppercase tracking-wider">
                   <th className="py-2 pl-4 pr-2 font-medium">Company</th>
                   <th className="py-2 px-2 font-medium">Metric</th>
                   <th className="py-2 px-2 font-medium">Period</th>
@@ -102,22 +102,22 @@ function MetricSection({ categoryKey, metrics, defaultOpen = false }: { category
                   const confColor = conf >= 0.75 ? 'text-emerald-400' : conf >= 0.5 ? 'text-amber-400' : 'text-red-400';
                   
                   return (
-                    <tr key={metric._id} className="hover:bg-surface-800/20 transition-colors">
-                      <td className="py-2 pl-4 pr-2 text-surface-300 font-medium truncate max-w-[120px]">{metric.company_name}</td>
+                    <tr key={metric._id} className="hover:bg-muted transition-colors">
+                      <td className="py-2 pl-4 pr-2 text-foreground-muted font-medium truncate max-w-[120px]">{metric.company_name}</td>
                       <td className="py-2 px-2">
                         <div className="flex items-center gap-2">
-                          <span className="text-surface-100">{metric.display_name || metric.metric_name}</span>
+                          <span className="text-foreground">{metric.display_name || metric.metric_name}</span>
                           {metric.extraction_method === 'derived_ratio' && (
                             <Badge variant="info">Derived</Badge>
                           )}
                         </div>
                       </td>
-                      <td className="py-2 px-2 text-surface-400 whitespace-nowrap">{metric.period || '-'}</td>
+                      <td className="py-2 px-2 text-muted-foreground whitespace-nowrap">{metric.period || '-'}</td>
                       <td className="py-2 px-2 text-white font-semibold text-right whitespace-nowrap">{formatMetric(metric.value, metric.unit)}</td>
                       <td className="py-2 px-2">
                         <span className={`text-xs font-medium ${confColor}`}>{Math.round(conf * 100)}%</span>
                       </td>
-                      <td className="py-2 pl-2 pr-4 text-surface-500 text-xs whitespace-nowrap">p. {metric.source_page ?? 'n/a'}</td>
+                      <td className="py-2 pl-2 pr-4 text-muted-foreground text-xs whitespace-nowrap">p. {metric.source_page ?? 'n/a'}</td>
                     </tr>
                   );
                 })}
@@ -146,8 +146,8 @@ export function WorkspaceInsights({ analysis }: WorkspaceInsightsProps) {
           <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary-600/15">
             <Sparkles className="h-7 w-7 text-primary-400" />
           </div>
-          <h3 className="mt-4 text-sm font-medium text-surface-200">Analysis desk is ready</h3>
-          <p className="mt-1 max-w-sm text-xs text-surface-500">
+          <h3 className="mt-4 text-sm font-medium text-foreground-muted">Analysis desk is ready</h3>
+          <p className="mt-1 max-w-sm text-xs text-muted-foreground">
             Upload a filing to populate source-backed metrics, risk signals, comparisons, and reports.
           </p>
           <Link
@@ -182,14 +182,14 @@ export function WorkspaceInsights({ analysis }: WorkspaceInsightsProps) {
             )}
             
             {uncategorized.length > 0 && (
-              <div className="rounded-lg border border-surface-700/40 bg-surface-900/40 overflow-hidden mb-3">
-                <div className="bg-surface-800/20 px-4 py-3 border-b border-surface-700/30">
-                  <p className="text-sm font-semibold text-surface-100">Other Financial Data</p>
+              <div className="rounded-lg border border-border bg-card overflow-hidden mb-3">
+                <div className="bg-muted px-4 py-3 border-b border-border">
+                  <p className="text-sm font-semibold text-foreground">Other Financial Data</p>
                 </div>
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
-                    <thead className="bg-surface-800/40">
-                      <tr className="border-b border-surface-700/40 text-left text-xs text-surface-400 uppercase tracking-wider">
+                    <thead className="bg-muted">
+                      <tr className="border-b border-border text-left text-xs text-muted-foreground uppercase tracking-wider">
                         <th className="py-2 pl-4 pr-2 font-medium">Company</th>
                         <th className="py-2 px-2 font-medium">Metric</th>
                         <th className="py-2 px-2 font-medium">Period</th>
@@ -199,12 +199,12 @@ export function WorkspaceInsights({ analysis }: WorkspaceInsightsProps) {
                     </thead>
                     <tbody className="divide-y divide-surface-700/20">
                       {uncategorized.map((metric) => (
-                        <tr key={metric._id} className="hover:bg-surface-800/20 transition-colors">
-                          <td className="py-2 pl-4 pr-2 text-surface-300 font-medium truncate max-w-[120px]">{metric.company_name}</td>
-                          <td className="py-2 px-2 text-surface-100">{metric.display_name || metric.metric_name}</td>
-                          <td className="py-2 px-2 text-surface-400 whitespace-nowrap">{metric.period || '-'}</td>
+                        <tr key={metric._id} className="hover:bg-muted transition-colors">
+                          <td className="py-2 pl-4 pr-2 text-foreground-muted font-medium truncate max-w-[120px]">{metric.company_name}</td>
+                          <td className="py-2 px-2 text-foreground">{metric.display_name || metric.metric_name}</td>
+                          <td className="py-2 px-2 text-muted-foreground whitespace-nowrap">{metric.period || '-'}</td>
                           <td className="py-2 px-2 text-white font-semibold text-right whitespace-nowrap">{formatMetric(metric.value, metric.unit)}</td>
-                          <td className="py-2 pl-2 pr-4 text-surface-500 text-xs whitespace-nowrap">p. {metric.source_page ?? 'n/a'}</td>
+                          <td className="py-2 pl-2 pr-4 text-muted-foreground text-xs whitespace-nowrap">p. {metric.source_page ?? 'n/a'}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -229,7 +229,7 @@ export function WorkspaceInsights({ analysis }: WorkspaceInsightsProps) {
         >
           <div className="space-y-3 mt-2">
             {redFlags.slice(0, 10).map((flag) => (
-              <div key={flag._id} className="rounded-lg border border-surface-700/40 bg-surface-900/40 p-4 transition-colors hover:border-surface-600/50">
+              <div key={flag._id} className="rounded-lg border border-border bg-card p-4 transition-colors hover:border-surface-600/50">
                 <div className="flex items-start gap-3">
                   <div className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${
                     flag.severity === 'critical' ? 'bg-red-500/20' :
@@ -239,7 +239,7 @@ export function WorkspaceInsights({ analysis }: WorkspaceInsightsProps) {
                     <ShieldAlert className={`h-3.5 w-3.5 ${
                       flag.severity === 'critical' ? 'text-red-400' :
                       flag.severity === 'high' ? 'text-orange-400' :
-                      flag.severity === 'medium' ? 'text-amber-400' : 'text-surface-400'
+                      flag.severity === 'medium' ? 'text-amber-400' : 'text-muted-foreground'
                     }`} />
                   </div>
                   <div className="flex-1 min-w-0">
@@ -248,16 +248,16 @@ export function WorkspaceInsights({ analysis }: WorkspaceInsightsProps) {
                         <Badge variant={flag.severity === 'critical' || flag.severity === 'high' ? 'error' : flag.severity === 'medium' ? 'warning' : 'neutral'}>
                           {flag.severity}
                         </Badge>
-                        <span className="text-xs font-medium text-surface-300">{flag.company_name}</span>
-                        <span className="text-xs text-surface-500">· {flag.category}</span>
+                        <span className="text-xs font-medium text-foreground-muted">{flag.company_name}</span>
+                        <span className="text-xs text-muted-foreground">· {flag.category}</span>
                       </div>
-                      <span className="text-xs text-surface-500">p. {flag.source_page ?? 'n/a'}</span>
+                      <span className="text-xs text-muted-foreground">p. {flag.source_page ?? 'n/a'}</span>
                     </div>
-                    <p className="text-sm font-semibold text-surface-100">{flag.title}</p>
-                    <p className="mt-1.5 text-sm text-surface-300 leading-relaxed">{flag.explanation}</p>
+                    <p className="text-sm font-semibold text-foreground">{flag.title}</p>
+                    <p className="mt-1.5 text-sm text-foreground-muted leading-relaxed">{flag.explanation}</p>
                     {flag.evidence && (
-                      <div className="mt-3 rounded border border-surface-700/30 bg-surface-800/40 p-2.5">
-                        <p className="text-xs text-surface-400 italic leading-relaxed line-clamp-2">"{flag.evidence}"</p>
+                      <div className="mt-3 rounded border border-border bg-muted p-2.5">
+                        <p className="text-xs text-muted-foreground italic leading-relaxed line-clamp-2">"{flag.evidence}"</p>
                       </div>
                     )}
                   </div>
@@ -266,7 +266,7 @@ export function WorkspaceInsights({ analysis }: WorkspaceInsightsProps) {
             ))}
             {redFlags.length > 10 && (
               <div className="text-center py-2">
-                <span className="text-xs text-surface-500">+ {redFlags.length - 10} more risks detected</span>
+                <span className="text-xs text-muted-foreground">+ {redFlags.length - 10} more risks detected</span>
               </div>
             )}
           </div>
@@ -286,13 +286,13 @@ export function WorkspaceInsights({ analysis }: WorkspaceInsightsProps) {
         >
           <div className="space-y-2 mt-2">
             {documents.slice(0, 5).map((doc) => (
-              <div key={doc._id} className="flex items-center gap-3 rounded-lg border border-surface-700/30 bg-surface-900/40 p-3 hover:bg-surface-800/40 transition-colors">
+              <div key={doc._id} className="flex items-center gap-3 rounded-lg border border-border bg-card p-3 hover:bg-muted transition-colors">
                 <div className="flex h-8 w-8 items-center justify-center rounded bg-primary-500/10 shrink-0">
                   <FileText className="h-4 w-4 text-primary-400" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-surface-100 truncate">{doc.file_name || doc.company_name}</p>
-                  <p className="text-xs text-surface-400">{doc.company_name} · {doc.fiscal_year || 'FY not stated'} · {doc.document_type || 'Document'}</p>
+                  <p className="text-sm font-medium text-foreground truncate">{doc.file_name || doc.company_name}</p>
+                  <p className="text-xs text-muted-foreground">{doc.company_name} · {doc.fiscal_year || 'FY not stated'} · {doc.document_type || 'Document'}</p>
                 </div>
                 <Badge variant={doc.status === 'indexed' ? 'success' : doc.status === 'uploaded' ? 'warning' : 'neutral'}>
                   {doc.status}
@@ -301,7 +301,7 @@ export function WorkspaceInsights({ analysis }: WorkspaceInsightsProps) {
             ))}
             {documents.length > 5 && (
               <div className="text-center py-2">
-                <span className="text-xs text-surface-500">+ {documents.length - 5} more documents</span>
+                <span className="text-xs text-muted-foreground">+ {documents.length - 5} more documents</span>
               </div>
             )}
           </div>

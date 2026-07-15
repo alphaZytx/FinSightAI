@@ -36,8 +36,8 @@ const chartTooltipStyle = {
 
 function MiniChart({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="rounded-lg border border-surface-700/40 bg-surface-900/40 p-4">
-      <h4 className="mb-3 text-xs font-medium text-surface-300">{title}</h4>
+    <div className="rounded-lg border border-border bg-card p-4">
+      <h4 className="mb-3 text-xs font-medium text-foreground-muted">{title}</h4>
       <div className="h-40">{children}</div>
     </div>
   );
@@ -103,8 +103,8 @@ export default function FinancialCharts() {
           </ResponsiveContainer>
         </MiniChart>
 
-        <div className="rounded-lg border border-surface-700/40 bg-surface-900/40 p-4 lg:col-span-2">
-          <h4 className="mb-3 text-xs font-medium text-surface-300">Financial Ratios</h4>
+        <div className="rounded-lg border border-border bg-card p-4 lg:col-span-2">
+          <h4 className="mb-3 text-xs font-medium text-foreground-muted">Financial Ratios</h4>
           <div className="h-40">
             <ResponsiveContainer width="100%" height="100%">
               <RadarChart data={ratioRadarData}>
