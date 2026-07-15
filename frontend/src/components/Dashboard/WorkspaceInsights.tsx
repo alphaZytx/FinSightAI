@@ -99,7 +99,7 @@ function MetricSection({ categoryKey, metrics, defaultOpen = false }: { category
               <tbody className="divide-y divide-surface-700/20">
                 {metrics.map((metric) => {
                   const conf = metric.confidence ?? 0;
-                  const confColor = conf >= 0.75 ? 'text-emerald-400' : conf >= 0.5 ? 'text-amber-400' : 'text-red-400';
+                  const confColor = conf >= 0.75 ? 'text-success-foreground' : conf >= 0.5 ? 'text-warning-foreground' : 'text-error-foreground';
                   
                   return (
                     <tr key={metric._id} className="hover:bg-muted transition-colors">
@@ -113,7 +113,7 @@ function MetricSection({ categoryKey, metrics, defaultOpen = false }: { category
                         </div>
                       </td>
                       <td className="py-2 px-2 text-muted-foreground whitespace-nowrap">{metric.period || '-'}</td>
-                      <td className="py-2 px-2 text-white font-semibold text-right whitespace-nowrap">{formatMetric(metric.value, metric.unit)}</td>
+                      <td className="py-2 px-2 text-foreground font-semibold text-right whitespace-nowrap">{formatMetric(metric.value, metric.unit)}</td>
                       <td className="py-2 px-2">
                         <span className={`text-xs font-medium ${confColor}`}>{Math.round(conf * 100)}%</span>
                       </td>
@@ -152,7 +152,7 @@ export function WorkspaceInsights({ analysis }: WorkspaceInsightsProps) {
           </p>
           <Link
             to="/workspace"
-            className="mt-4 inline-flex items-center gap-2 rounded-lg bg-primary-600 px-4 py-2 text-sm font-medium text-white hover:bg-primary-500 transition-colors"
+            className="mt-4 inline-flex items-center gap-2 rounded-lg bg-primary-600 px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-500 transition-colors"
           >
             Upload a Filing
           </Link>
@@ -203,7 +203,7 @@ export function WorkspaceInsights({ analysis }: WorkspaceInsightsProps) {
                           <td className="py-2 pl-4 pr-2 text-foreground-muted font-medium truncate max-w-[120px]">{metric.company_name}</td>
                           <td className="py-2 px-2 text-foreground">{metric.display_name || metric.metric_name}</td>
                           <td className="py-2 px-2 text-muted-foreground whitespace-nowrap">{metric.period || '-'}</td>
-                          <td className="py-2 px-2 text-white font-semibold text-right whitespace-nowrap">{formatMetric(metric.value, metric.unit)}</td>
+                          <td className="py-2 px-2 text-foreground font-semibold text-right whitespace-nowrap">{formatMetric(metric.value, metric.unit)}</td>
                           <td className="py-2 pl-2 pr-4 text-muted-foreground text-xs whitespace-nowrap">p. {metric.source_page ?? 'n/a'}</td>
                         </tr>
                       ))}
@@ -229,17 +229,17 @@ export function WorkspaceInsights({ analysis }: WorkspaceInsightsProps) {
         >
           <div className="space-y-3 mt-2">
             {redFlags.slice(0, 10).map((flag) => (
-              <div key={flag._id} className="rounded-lg border border-border bg-card p-4 transition-colors hover:border-surface-600/50">
+              <div key={flag._id} className="rounded-lg border border-border bg-card p-4 transition-colors hover:border-primary-500/30">
                 <div className="flex items-start gap-3">
                   <div className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${
-                    flag.severity === 'critical' ? 'bg-red-500/20' :
+                    flag.severity === 'critical' ? 'bg-error' :
                     flag.severity === 'high' ? 'bg-orange-500/20' :
-                    flag.severity === 'medium' ? 'bg-amber-500/20' : 'bg-surface-700/40'
+                    flag.severity === 'medium' ? 'bg-warning' : 'bg-muted'
                   }`}>
                     <ShieldAlert className={`h-3.5 w-3.5 ${
-                      flag.severity === 'critical' ? 'text-red-400' :
+                      flag.severity === 'critical' ? 'text-error-foreground' :
                       flag.severity === 'high' ? 'text-orange-400' :
-                      flag.severity === 'medium' ? 'text-amber-400' : 'text-muted-foreground'
+                      flag.severity === 'medium' ? 'text-warning-foreground' : 'text-muted-foreground'
                     }`} />
                   </div>
                   <div className="flex-1 min-w-0">

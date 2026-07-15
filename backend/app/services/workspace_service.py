@@ -6,6 +6,7 @@ from app.repositories.chunk_repository import ChunkRepository
 from app.repositories.document_repository import DocumentRepository
 from app.repositories.metric_repository import MetricRepository
 from app.repositories.red_flag_repository import RedFlagRepository
+from app.repositories.report_repository import ReportRepository
 
 
 class WorkspaceService:
@@ -24,10 +25,15 @@ class WorkspaceService:
         metrics_deleted = await MetricRepository().delete_by_workspace(workspace_id)
         flags_deleted = await RedFlagRepository().delete_by_workspace(workspace_id)
         documents_deleted = await self.doc_repo.delete_by_workspace(workspace_id)
+        reports_deleted = await ReportRepository().delete_by_workspace(workspace_id)
 
         upload_dir = Path(settings.UPLOAD_DIR) / workspace_id
         if upload_dir.exists():
             shutil.rmtree(upload_dir, ignore_errors=True)
+
+        report_dir = Path(settings.REPORT_DIR) / workspace_id
+        if report_dir.exists():
+            shutil.rmtree(report_dir, ignore_errors=True)
 
         return {
             "cleared": True,
@@ -36,4 +42,5 @@ class WorkspaceService:
             "chunks_deleted": chunks_deleted,
             "metrics_deleted": metrics_deleted,
             "flags_deleted": flags_deleted,
+            "reports_deleted": reports_deleted,
         }

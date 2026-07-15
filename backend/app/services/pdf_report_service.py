@@ -173,8 +173,8 @@ def _build_styles() -> dict:
 class PDFReportService:
     """Generate professionally styled analyst PDF reports."""
 
-    def generate_simple_report(self, title: str, sections: list[dict]) -> str:
-        report_dir = Path(settings.REPORT_DIR)
+    def generate_simple_report(self, title: str, sections: list[dict], workspace_id: str) -> str:
+        report_dir = Path(settings.REPORT_DIR) / workspace_id
         report_dir.mkdir(parents=True, exist_ok=True)
         path = report_dir / f"report_{uuid4().hex[:12]}.pdf"
         styles = _build_styles()

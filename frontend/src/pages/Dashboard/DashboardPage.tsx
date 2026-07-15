@@ -57,8 +57,8 @@ export default function DashboardPage() {
             </div>
           )}
           {analysis.error && (
-            <div className="rounded-lg border border-red-500/30 bg-red-500/5 p-4">
-              <p className="text-sm text-red-400">Could not load analysis: {analysis.error.message}</p>
+            <div className="rounded-lg border border-error-border bg-error p-4">
+              <p className="text-sm text-error-foreground">Could not load analysis: {analysis.error.message}</p>
             </div>
           )}
           {analysis.data && <WorkspaceInsights analysis={analysis.data} />}
@@ -70,10 +70,10 @@ export default function DashboardPage() {
         <div className="space-y-6">
           {/* Backend status indicator */}
           <div className={`flex items-center gap-2 rounded-lg border px-4 py-3 ${
-            isApiOnline ? 'border-emerald-500/30 bg-emerald-500/5' : 'border-amber-500/30 bg-amber-500/5'
+            isApiOnline ? 'border-success-border bg-success' : 'border-warning-border bg-warning'
           }`}>
-            <span className={`h-2 w-2 rounded-full ${isApiOnline ? 'bg-emerald-400' : 'bg-amber-400 animate-pulse'}`} />
-            <span className={`text-sm font-medium ${isApiOnline ? 'text-emerald-400' : 'text-amber-400'}`}>
+            <span className={`h-2 w-2 rounded-full ${isApiOnline ? 'bg-success-foreground' : 'bg-warning-foreground animate-pulse'}`} />
+            <span className={`text-sm font-medium ${isApiOnline ? 'text-success-foreground' : 'text-warning-foreground'}`}>
               {isApiOnline ? 'API Online' : 'API Offline'}
             </span>
           </div>

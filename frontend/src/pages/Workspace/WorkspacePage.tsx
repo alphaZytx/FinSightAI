@@ -68,18 +68,18 @@ function categorizeMetrics(metrics: AnalysisMetric[]) {
 
 function MetricCard({ metric }: { metric: AnalysisMetric }) {
   const conf = metric.confidence ?? 0;
-  const confColor = conf >= 0.75 ? 'text-emerald-400' : conf >= 0.5 ? 'text-amber-400' : 'text-red-400';
-  const confBg = conf >= 0.75 ? 'bg-emerald-500/10' : conf >= 0.5 ? 'bg-amber-500/10' : 'bg-red-500/10';
+  const confColor = conf >= 0.75 ? 'text-success-foreground' : conf >= 0.5 ? 'text-warning-foreground' : 'text-error-foreground';
+  const confBg = conf >= 0.75 ? 'bg-success' : conf >= 0.5 ? 'bg-warning' : 'bg-error';
 
   return (
-    <div className="rounded-lg border border-border bg-muted p-3 hover:border-surface-600/50 transition-colors">
+    <div className="rounded-lg border border-border bg-muted p-3 hover:border-primary-500/30 transition-colors">
       <div className="flex items-start justify-between gap-2">
         <p className="text-xs font-medium text-primary-300 leading-tight">{metric.display_name || metric.metric_name}</p>
         <span className={`shrink-0 rounded px-1.5 py-0.5 text-[10px] font-medium ${confBg} ${confColor}`}>
           {Math.round(conf * 100)}%
         </span>
       </div>
-      <p className="mt-1.5 text-lg font-bold text-white leading-none">{formatMetric(metric.value, metric.unit)}</p>
+      <p className="mt-1.5 text-lg font-bold text-foreground leading-none">{formatMetric(metric.value, metric.unit)}</p>
       <div className="mt-2 flex items-center justify-between text-[10px]">
         <span className="text-muted-foreground">{metric.period || 'Not stated'}</span>
         <span className="text-muted-foreground">p. {metric.source_page ?? 'n/a'}</span>
@@ -138,17 +138,17 @@ function ModelSelector({ value, onChange }: { value: LLMProvider; onChange: (v: 
           onClick={() => onChange('groq')}
           className={`flex items-center gap-2.5 rounded-lg border p-3 text-left transition-all ${
             value === 'groq'
-              ? 'border-amber-500/60 bg-amber-500/10 shadow-sm shadow-amber-500/10'
-              : 'border-border bg-muted hover:border-surface-600'
+              ? 'border-amber-500/60 bg-warning shadow-sm '
+              : 'border-border bg-muted hover:border-primary-500/30'
           }`}
         >
           <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
-            value === 'groq' ? 'bg-amber-500/20' : 'bg-surface-700/60'
+            value === 'groq' ? 'bg-warning' : 'bg-muted'
           }`}>
-            <Zap className={`h-4 w-4 ${value === 'groq' ? 'text-amber-400' : 'text-muted-foreground'}`} />
+            <Zap className={`h-4 w-4 ${value === 'groq' ? 'text-warning-foreground' : 'text-muted-foreground'}`} />
           </div>
           <div className="min-w-0">
-            <p className={`text-sm font-semibold ${value === 'groq' ? 'text-amber-300' : 'text-foreground-muted'}`}>Groq</p>
+            <p className={`text-sm font-semibold ${value === 'groq' ? 'text-warning-foreground' : 'text-foreground-muted'}`}>Groq</p>
             <p className="text-[10px] leading-tight text-muted-foreground">Fast · Simple tasks</p>
           </div>
         </button>
@@ -157,17 +157,17 @@ function ModelSelector({ value, onChange }: { value: LLMProvider; onChange: (v: 
           onClick={() => onChange('google')}
           className={`flex items-center gap-2.5 rounded-lg border p-3 text-left transition-all ${
             value === 'google'
-              ? 'border-blue-500/60 bg-blue-500/10 shadow-sm shadow-blue-500/10'
-              : 'border-border bg-muted hover:border-surface-600'
+              ? 'border-blue-500/60 bg-info shadow-sm '
+              : 'border-border bg-muted hover:border-primary-500/30'
           }`}
         >
           <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
-            value === 'google' ? 'bg-blue-500/20' : 'bg-surface-700/60'
+            value === 'google' ? 'bg-info' : 'bg-muted'
           }`}>
-            <Brain className={`h-4 w-4 ${value === 'google' ? 'text-blue-400' : 'text-muted-foreground'}`} />
+            <Brain className={`h-4 w-4 ${value === 'google' ? 'text-info-foreground' : 'text-muted-foreground'}`} />
           </div>
           <div className="min-w-0">
-            <p className={`text-sm font-semibold ${value === 'google' ? 'text-blue-300' : 'text-foreground-muted'}`}>Google Gemini</p>
+            <p className={`text-sm font-semibold ${value === 'google' ? 'text-info-foreground' : 'text-foreground-muted'}`}>Google Gemini</p>
             <p className="text-[10px] leading-tight text-muted-foreground">Deep · Research & analysis</p>
           </div>
         </button>
@@ -186,19 +186,19 @@ function PipelineStep({ label, icon: Icon, status, detail }: {
   const failed = status === 'failed';
   return (
     <div className={`flex items-center gap-3 rounded-lg border p-3 transition-all ${
-      successful ? 'border-emerald-500/30 bg-emerald-500/5' :
-      failed ? 'border-red-500/30 bg-red-500/5' :
+      successful ? 'border-success-border bg-success' :
+      failed ? 'border-error-border bg-error' :
       'border-border bg-card'
     }`}>
       <Icon className={`h-5 w-5 shrink-0 ${
-        successful ? 'text-emerald-400' : failed ? 'text-red-400' : 'text-muted-foreground'
+        successful ? 'text-success-foreground' : failed ? 'text-error-foreground' : 'text-muted-foreground'
       }`} />
       <div className="flex-1 min-w-0">
-        <p className={`text-sm font-medium ${successful ? 'text-emerald-300' : failed ? 'text-red-300' : 'text-foreground-muted'}`}>{label}</p>
+        <p className={`text-sm font-medium ${successful ? 'text-success-foreground' : failed ? 'text-error-foreground' : 'text-foreground-muted'}`}>{label}</p>
         {detail && <p className="text-xs text-muted-foreground truncate">{detail}</p>}
       </div>
-      {successful && <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />}
-      {failed && <AlertCircle className="h-4 w-4 text-red-400 shrink-0" />}
+      {successful && <CheckCircle2 className="h-4 w-4 text-success-foreground shrink-0" />}
+      {failed && <AlertCircle className="h-4 w-4 text-error-foreground shrink-0" />}
     </div>
   );
 }
@@ -226,7 +226,7 @@ function PipelineResults({ result }: { result: IngestResponse }) {
       <div className="flex items-center justify-between">
         <div>
           <p className="text-xs font-semibold tracking-widest text-primary-400 uppercase">Ingestion complete</p>
-          <h3 className="mt-1 text-lg font-semibold text-white">Agent Analysis Summary</h3>
+          <h3 className="mt-1 text-lg font-semibold text-foreground">Agent Analysis Summary</h3>
         </div>
         <Badge variant="info">{result.document_id.slice(0, 8)}…</Badge>
       </div>
@@ -238,19 +238,19 @@ function PipelineResults({ result }: { result: IngestResponse }) {
       {allMetrics.length > 0 && (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           <div className="rounded-lg border border-border bg-muted p-3 text-center">
-            <p className="text-2xl font-bold text-white">{allMetrics.length}</p>
+            <p className="text-2xl font-bold text-foreground">{allMetrics.length}</p>
             <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Total Metrics</p>
           </div>
           <div className="rounded-lg border border-border bg-muted p-3 text-center">
-            <p className="text-2xl font-bold text-emerald-400">{allMetrics.filter(m => (m.confidence ?? 0) >= 0.75).length}</p>
+            <p className="text-2xl font-bold text-success-foreground">{allMetrics.filter(m => (m.confidence ?? 0) >= 0.75).length}</p>
             <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">High Confidence</p>
           </div>
           <div className="rounded-lg border border-border bg-muted p-3 text-center">
-            <p className="text-2xl font-bold text-blue-400">{allMetrics.filter(m => m.extraction_method === 'derived_ratio').length}</p>
+            <p className="text-2xl font-bold text-info-foreground">{allMetrics.filter(m => m.extraction_method === 'derived_ratio').length}</p>
             <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Derived Ratios</p>
           </div>
           <div className="rounded-lg border border-border bg-muted p-3 text-center">
-            <p className="text-2xl font-bold text-amber-400">{new Set(allMetrics.map(m => m.period).filter(Boolean)).size}</p>
+            <p className="text-2xl font-bold text-warning-foreground">{new Set(allMetrics.map(m => m.period).filter(Boolean)).size}</p>
             <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Periods Covered</p>
           </div>
         </div>
@@ -288,14 +288,14 @@ function PipelineResults({ result }: { result: IngestResponse }) {
               <div key={flag._id} className="rounded-lg border border-border bg-muted p-4">
                 <div className="flex items-start gap-3">
                   <div className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${
-                    flag.severity === 'critical' ? 'bg-red-500/20' :
+                    flag.severity === 'critical' ? 'bg-error-border' :
                     flag.severity === 'high' ? 'bg-orange-500/20' :
-                    flag.severity === 'medium' ? 'bg-amber-500/20' : 'bg-surface-700/40'
+                    flag.severity === 'medium' ? 'bg-warning' : 'bg-muted'
                   }`}>
                     <ShieldAlert className={`h-3.5 w-3.5 ${
-                      flag.severity === 'critical' ? 'text-red-400' :
+                      flag.severity === 'critical' ? 'text-error-foreground' :
                       flag.severity === 'high' ? 'text-orange-400' :
-                      flag.severity === 'medium' ? 'text-amber-400' : 'text-muted-foreground'
+                      flag.severity === 'medium' ? 'text-warning-foreground' : 'text-muted-foreground'
                     }`} />
                   </div>
                   <div className="flex-1 min-w-0">
@@ -521,7 +521,7 @@ export default function WorkspacePage() {
     <div className="space-y-6">
       <AnalysisProgressOverlay isBusy={busy} companyName={uploaded?.company_name || companyName || 'Company'} />
       <div>
-        <h1 className="text-2xl font-bold text-white">Workspace</h1>
+        <h1 className="text-2xl font-bold text-foreground">Workspace</h1>
         <p className="mt-1 text-sm text-muted-foreground">Upload and analyze financial documents</p>
       </div>
 
@@ -568,14 +568,14 @@ export default function WorkspacePage() {
             <ModelSelector value={llmProvider} onChange={setLlmProvider} />
 
             <div
-              className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-surface-600 bg-card py-10 transition-colors hover:border-primary-500/40 hover:bg-muted"
+              className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-border bg-card py-10 transition-colors hover:border-primary-500/40 hover:bg-muted"
             >
               <Upload className="h-8 w-8 text-muted-foreground" />
               <p className="mt-3 text-sm font-medium text-foreground-muted">
                 {file ? file.name : 'Select a PDF file'}
               </p>
               {file && <p className="mt-1 text-xs text-muted-foreground">{(file.size / (1024 * 1024)).toFixed(2)} MB</p>}
-              <label className="mt-3 cursor-pointer rounded-lg bg-primary-600 px-4 py-2 text-sm font-medium text-white hover:bg-primary-500 transition-colors">
+              <label className="mt-3 cursor-pointer rounded-lg bg-primary-600 px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-500 transition-colors">
                 Browse Files
                 <input
                   type="file"
@@ -599,14 +599,14 @@ export default function WorkspacePage() {
             <button
               type="submit"
               disabled={busy || !file || !activeWorkspaceId}
-              className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-primary-600 px-4 py-2.5 text-sm font-medium text-white shadow-lg shadow-primary hover:bg-primary-500 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+              className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-primary-600 px-4 py-2.5 text-sm font-medium text-primary-foreground shadow-lg shadow-primary hover:bg-primary-500 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
             >
               <FileUp className="h-4 w-4" />
               {busy ? 'Processing…' : autoIngest ? 'Upload & Analyze' : 'Upload Document'}
             </button>
 
             {!activeWorkspaceId && <p className="text-xs text-muted-foreground text-center">Preparing workspace…</p>}
-            {error && <p className="text-sm text-red-400">{error}</p>}
+            {error && <p className="text-sm text-error-foreground">{error}</p>}
           </form>
         </Card>
 
@@ -627,7 +627,7 @@ export default function WorkspacePage() {
                 type="button"
                 onClick={runIngestion}
                 disabled={busy}
-                className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-primary-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-primary-500 transition-colors disabled:opacity-50"
+                className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-primary-600 px-4 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary-500 transition-colors disabled:opacity-50"
               >
                 <Play className="h-4 w-4" />
                 Run Analysis
@@ -649,7 +649,7 @@ export default function WorkspacePage() {
       <div className="rounded-xl border border-border bg-card p-6">
         <div className="mb-4 flex items-start justify-between gap-4">
           <div>
-            <h2 className="text-base font-semibold text-white">Document Library</h2>
+            <h2 className="text-base font-semibold text-foreground">Document Library</h2>
             <p className="mt-0.5 text-xs text-muted-foreground">All uploaded documents in this workspace</p>
           </div>
           {documents.length > 0 && (
@@ -657,7 +657,7 @@ export default function WorkspacePage() {
               type="button"
               onClick={clearAllData}
               disabled={clearingAll || deletingId !== null}
-              className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-1.5 text-xs font-medium text-red-400 transition-colors hover:bg-red-500/20 disabled:opacity-50"
+              className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-red-500/30 bg-error px-3 py-1.5 text-xs font-medium text-error-foreground transition-colors hover:bg-error-border disabled:opacity-50"
             >
               {clearingAll ? (
                 <svg className="h-3.5 w-3.5 animate-spin" viewBox="0 0 24 24" fill="none">
@@ -693,9 +693,9 @@ export default function WorkspacePage() {
                   <p className="text-xs text-muted-foreground">{doc.company_name} · FY {doc.fiscal_year}</p>
                 </div>
                 <span className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-medium ${
-                  doc.status === 'indexed' ? 'bg-emerald-500/15 text-emerald-400' :
+                  doc.status === 'indexed' ? 'bg-success text-success-foreground' :
                   doc.status === 'uploaded' ? 'bg-primary-500/15 text-primary-400' :
-                  'bg-surface-700/50 text-muted-foreground'
+                  'bg-muted text-muted-foreground'
                 }`}>
                   {doc.status}
                 </span>
@@ -703,7 +703,7 @@ export default function WorkspacePage() {
                   type="button"
                   onClick={() => deleteDoc(doc._id)}
                   disabled={deletingId === doc._id}
-                  className="shrink-0 rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-red-500/10 hover:text-red-400 disabled:opacity-40"
+                  className="shrink-0 rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-error hover:text-error-foreground disabled:opacity-40"
                   aria-label="Delete document"
                 >
                   {deletingId === doc._id ? (

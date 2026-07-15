@@ -5,10 +5,10 @@ import { formatRelativeTime } from '../../utils/formatters';
 import { Card } from '../Common';
 
 const typeConfig = {
-  success: { icon: CheckCircle, color: 'text-emerald-400' },
-  info: { icon: Info, color: 'text-blue-400' },
-  warning: { icon: AlertTriangle, color: 'text-amber-400' },
-  error: { icon: XCircle, color: 'text-red-400' },
+  success: { icon: CheckCircle, color: 'text-success-foreground' },
+  info: { icon: Info, color: 'text-info-foreground' },
+  warning: { icon: AlertTriangle, color: 'text-warning-foreground' },
+  error: { icon: XCircle, color: 'text-error-foreground' },
 };
 
 interface NotificationsPanelProps {

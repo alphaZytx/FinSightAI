@@ -4,10 +4,10 @@ interface BadgeProps {
 }
 
 const variants = {
-  success: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30',
-  warning: 'bg-amber-500/15 text-amber-400 border-amber-500/30',
-  error: 'bg-red-500/15 text-red-400 border-red-500/30',
-  info: 'bg-blue-500/15 text-blue-400 border-blue-500/30',
+  success: 'bg-success text-success-foreground border-success-border',
+  warning: 'bg-warning text-warning-foreground border-warning-border',
+  error: 'bg-error text-error-foreground border-error-border',
+  info: 'bg-info text-info-foreground border-info-border',
   neutral: 'bg-muted text-foreground-muted border-border',
 };
 

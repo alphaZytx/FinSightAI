@@ -5,9 +5,9 @@ import { formatRelativeTime } from '../../utils/formatters';
 import { Card } from '../Common';
 
 const typeConfig = {
-  upload: { icon: Upload, color: 'text-blue-400 bg-blue-500/10' },
+  upload: { icon: Upload, color: 'text-info-foreground bg-info' },
   analysis: { icon: Brain, color: 'text-purple-400 bg-purple-500/10' },
-  report: { icon: FileOutput, color: 'text-emerald-400 bg-emerald-500/10' },
+  report: { icon: FileOutput, color: 'text-success-foreground bg-success' },
   chat: { icon: MessageSquare, color: 'text-cyan-400 bg-cyan-500/10' },
 };
 

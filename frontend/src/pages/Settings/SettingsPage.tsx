@@ -8,7 +8,7 @@ export default function SettingsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-white">Settings</h1>
+        <h1 className="text-2xl font-bold text-foreground">Settings</h1>
         <p className="mt-1 text-sm text-muted-foreground">Manage your account and preferences</p>
       </div>
 
@@ -19,7 +19,7 @@ export default function SettingsPage() {
             <input
               type="text"
               defaultValue="Alex Morgan"
-              className="w-full rounded-lg border border-border bg-muted px-4 py-2 text-sm text-foreground focus:border-primary-500 focus:outline-none"
+              className="w-full rounded-lg border border-border bg-muted px-4 py-2 text-sm text-foreground shadow-sm transition-all duration-200 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/10"
             />
           </div>
           <div>
@@ -27,7 +27,7 @@ export default function SettingsPage() {
             <input
               type="email"
               defaultValue="alex@finintel.ai"
-              className="w-full rounded-lg border border-border bg-muted px-4 py-2 text-sm text-foreground focus:border-primary-500 focus:outline-none"
+              className="w-full rounded-lg border border-border bg-muted px-4 py-2 text-sm text-foreground shadow-sm transition-all duration-200 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/10"
             />
           </div>
         </div>
@@ -36,7 +36,7 @@ export default function SettingsPage() {
       <Card title="Notifications">
         <div className="space-y-3">
           {['Report generation alerts', 'Document upload confirmations', 'Red flag detections', 'AI analysis completions'].map((label) => (
-            <label key={label} className="flex items-center justify-between rounded-lg border border-border p-3">
+            <label key={label} className="flex cursor-pointer items-center justify-between rounded-lg border border-border p-3 transition-colors duration-200 hover:border-primary-500/30 hover:bg-muted/50">
               <span className="text-sm text-foreground-muted">{label}</span>
               <input type="checkbox" defaultChecked className="h-4 w-4 rounded accent-primary-500" />
             </label>
@@ -53,7 +53,7 @@ export default function SettingsPage() {
           Your workspace will remain, but all previous research data will be permanently deleted.
         </p>
         {error && (
-          <p className="mb-4 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-400">
+          <p className="mb-4 rounded-lg border border-error-border bg-error px-3 py-2 text-sm text-error-foreground">
             {error}
           </p>
         )}
@@ -61,7 +61,7 @@ export default function SettingsPage() {
           type="button"
           onClick={() => clearAll()}
           disabled={clearing}
-          className="inline-flex items-center gap-2 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-2.5 text-sm font-medium text-red-400 transition-colors hover:bg-red-500/20 disabled:opacity-50"
+          className="inline-flex items-center gap-2 rounded-lg border border-error-border bg-error px-4 py-2.5 text-sm font-medium text-error-foreground transition-colors hover:bg-error-border disabled:opacity-50"
         >
           {clearing ? (
             <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">

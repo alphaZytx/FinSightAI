@@ -32,7 +32,7 @@ export default function Navbar({ sidebarCollapsed }: NavbarProps) {
         <input
           type="text"
           placeholder="Search companies, reports, documents..."
-          className="w-full rounded-lg border border-border bg-muted py-2 pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary-500/50 focus:outline-none focus:ring-1 focus:ring-primary-500/30"
+          className="w-full rounded-lg border border-border bg-muted py-2 pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground shadow-sm transition-all duration-200 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/10"
         />
       </div>
 
@@ -41,8 +41,8 @@ export default function Navbar({ sidebarCollapsed }: NavbarProps) {
         <span
           className={`hidden sm:inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium ${
             isApiOnline
-              ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400'
-              : 'border-amber-500/30 bg-amber-500/10 text-amber-400'
+              ? 'border-success-border bg-success text-success-foreground'
+              : 'border-warning-border bg-warning text-warning-foreground'
           }`}
           title="Backend health"
         >
@@ -72,8 +72,8 @@ export default function Navbar({ sidebarCollapsed }: NavbarProps) {
         </button>
 
         <div className="flex items-center gap-2 rounded-lg border border-border bg-muted px-3 py-1.5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-600/30">
-            <User className="h-4 w-4 text-primary-300" />
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-500/20">
+            <User className="h-4 w-4 text-primary-500" />
           </div>
           <div className="hidden sm:block">
             <p className="text-sm font-medium capitalize text-foreground">{session?.name ?? 'User'}</p>

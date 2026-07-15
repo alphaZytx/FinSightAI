@@ -21,7 +21,7 @@ export default function ResearchProgress({ steps = mockResearchSteps, companyNam
           <span>Overall progress</span>
           <span>{progress}%</span>
         </div>
-        <div className="mt-2 h-2 overflow-hidden rounded-full bg-surface-700">
+        <div className="mt-2 h-2 overflow-hidden rounded-full bg-border">
           <div
             className="h-full rounded-full bg-gradient-to-r from-primary-600 to-primary-400 transition-all duration-300"
             style={{ width: `${progress}%` }}
@@ -36,10 +36,10 @@ export default function ResearchProgress({ steps = mockResearchSteps, companyNam
               <div
                 className={`flex h-7 w-7 items-center justify-center rounded-full border-2 ${
                   step.completed
-                    ? 'border-emerald-500 bg-emerald-500/20 text-emerald-400'
+                    ? 'border-success-border bg-success text-success-foreground'
                     : step.active
                       ? 'border-primary-500 bg-primary-500/20 text-primary-400'
-                      : 'border-surface-600 bg-muted text-muted-foreground'
+                      : 'border-border bg-muted text-muted-foreground'
                 }`}
               >
                 {step.completed ? (
@@ -53,7 +53,7 @@ export default function ResearchProgress({ steps = mockResearchSteps, companyNam
               {index < steps.length - 1 && (
                 <div
                   className={`my-1 h-6 w-0.5 ${
-                    step.completed ? 'bg-emerald-500/50' : 'bg-surface-700'
+                    step.completed ? 'bg-success-border' : 'bg-border'
                   }`}
                 />
               )}
@@ -62,7 +62,7 @@ export default function ResearchProgress({ steps = mockResearchSteps, companyNam
               <p
                 className={`text-sm font-medium ${
                   step.completed
-                    ? 'text-emerald-400'
+                    ? 'text-success-foreground'
                     : step.active
                       ? 'text-primary-300'
                       : 'text-muted-foreground'

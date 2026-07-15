@@ -16,17 +16,17 @@ function ModelSelector({ value, onChange }: { value: LLMProvider; onChange: (v: 
           onClick={() => onChange('groq')}
           className={`flex items-center gap-2 rounded-lg border p-2.5 text-left transition-all ${
             value === 'groq'
-              ? 'border-amber-500/60 bg-amber-500/10 shadow-sm shadow-amber-500/10'
-              : 'border-border bg-muted hover:border-surface-600'
+              ? 'border-warning-border bg-warning shadow-sm'
+              : 'border-border bg-muted hover:border-primary-500/30'
           }`}
         >
-          <div className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-md ${
-            value === 'groq' ? 'bg-amber-500/20' : 'bg-surface-700/60'
+          <div className={`flex h-8 w-8 items-center justify-center rounded-lg transition-colors ${
+            value === 'groq' ? 'bg-warning' : 'bg-muted'
           }`}>
-            <Zap className={`h-3.5 w-3.5 ${value === 'groq' ? 'text-amber-400' : 'text-muted-foreground'}`} />
+            <Zap className={`h-3.5 w-3.5 ${value === 'groq' ? 'text-warning-foreground' : 'text-muted-foreground'}`} />
           </div>
-          <div className="min-w-0">
-            <p className={`text-xs font-semibold ${value === 'groq' ? 'text-amber-300' : 'text-foreground-muted'}`}>Groq</p>
+          <div>
+            <p className={`text-xs font-semibold ${value === 'groq' ? 'text-warning-foreground' : 'text-foreground-muted'}`}>Groq</p>
             <p className="text-[10px] leading-tight text-muted-foreground">Fast</p>
           </div>
         </button>
@@ -35,17 +35,17 @@ function ModelSelector({ value, onChange }: { value: LLMProvider; onChange: (v: 
           onClick={() => onChange('google')}
           className={`flex items-center gap-2 rounded-lg border p-2.5 text-left transition-all ${
             value === 'google'
-              ? 'border-blue-500/60 bg-blue-500/10 shadow-sm shadow-blue-500/10'
-              : 'border-border bg-muted hover:border-surface-600'
+              ? 'border-info-border bg-info shadow-sm'
+              : 'border-border bg-muted hover:border-primary-500/30'
           }`}
         >
-          <div className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-md ${
-            value === 'google' ? 'bg-blue-500/20' : 'bg-surface-700/60'
+          <div className={`flex h-8 w-8 items-center justify-center rounded-lg transition-colors ${
+            value === 'google' ? 'bg-info' : 'bg-muted'
           }`}>
-            <Brain className={`h-3.5 w-3.5 ${value === 'google' ? 'text-blue-400' : 'text-muted-foreground'}`} />
+            <Brain className={`h-3.5 w-3.5 ${value === 'google' ? 'text-info-foreground' : 'text-muted-foreground'}`} />
           </div>
-          <div className="min-w-0">
-            <p className={`text-xs font-semibold ${value === 'google' ? 'text-blue-300' : 'text-foreground-muted'}`}>Gemini</p>
+          <div>
+            <p className={`text-xs font-semibold ${value === 'google' ? 'text-info-foreground' : 'text-foreground-muted'}`}>Gemini</p>
             <p className="text-[10px] leading-tight text-muted-foreground">Deep</p>
           </div>
         </button>
@@ -86,7 +86,7 @@ export default function ChatPage() {
   return (
     <div className="flex h-[calc(100vh-7rem)] flex-col space-y-4">
       <div>
-        <h1 className="text-2xl font-bold text-white">AI Research Chat</h1>
+        <h1 className="text-2xl font-bold text-foreground">AI Research Chat</h1>
         <p className="mt-1 text-sm text-muted-foreground">Ask cited financial research questions about your documents</p>
       </div>
 
@@ -96,7 +96,7 @@ export default function ChatPage() {
           <form onSubmit={submit} className="flex flex-col gap-4 flex-1">
             <div>
               <p className="text-xs font-semibold tracking-widest text-primary-400 uppercase">Research Agent</p>
-              <h3 className="mt-1 text-lg font-semibold text-white">Ask the Filing</h3>
+              <h3 className="mt-1 text-lg font-semibold text-foreground">Ask the Filing</h3>
               <p className="mt-1 text-xs text-muted-foreground">The agent retrieves evidence paths, then cites every factual response.</p>
             </div>
 
@@ -116,13 +116,13 @@ export default function ChatPage() {
             <button
               type="submit"
               disabled={busy || !activeWorkspaceId}
-              className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-primary-600 px-4 py-2.5 text-sm font-medium text-white shadow-lg shadow-primary hover:bg-primary-500 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+              className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-primary-600 px-4 py-2.5 text-sm font-medium text-primary-foreground shadow-lg shadow-primary hover:bg-primary-500 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
             >
               <Send className="h-4 w-4" />
               {busy ? 'Retrieving evidence…' : 'Ask Research Question'}
             </button>
             {!activeWorkspaceId && <p className="text-xs text-muted-foreground text-center">Preparing workspace…</p>}
-            {error && <p className="text-sm text-red-400">{error}</p>}
+            {error && <p className="text-sm text-error-foreground">{error}</p>}
           </form>
         </Card>
 
@@ -134,7 +134,7 @@ export default function ChatPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs font-semibold tracking-widest text-primary-400 uppercase">Source-grounded response</p>
-                  <h3 className="mt-1 text-lg font-semibold text-white">Research Answer</h3>
+                  <h3 className="mt-1 text-lg font-semibold text-foreground">Research Answer</h3>
                 </div>
                 <Badge variant="info">
                   {result.research_steps?.evidence_count ?? result.citations.length} sources

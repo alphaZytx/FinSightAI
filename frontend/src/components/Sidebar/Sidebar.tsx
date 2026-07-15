@@ -36,11 +36,11 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
     >
       <div className="flex h-16 items-center gap-3 border-b border-border px-4">
         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary-600">
-          <Brain className="h-5 w-5 text-white" />
+          <Brain className="h-5 w-5 text-primary-foreground" />
         </div>
         {!collapsed && (
           <div>
-            <p className="text-sm font-bold text-white">FinSightAI</p>
+            <p className="text-sm font-bold text-foreground">FinSightAI</p>
             <p className="text-[10px] text-muted-foreground">Financial Research</p>
           </div>
         )}
@@ -54,13 +54,13 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
               key={path}
               to={path}
               title={collapsed ? label : undefined}
-              className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all ${
+              className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 active:scale-[0.98] ${
                 isActive
-                  ? 'bg-primary-600/20 text-primary-300'
-                  : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                  ? 'bg-primary-500/10 text-primary-500'
+                  : 'text-muted-foreground hover:bg-muted/80 hover:text-foreground'
               }`}
             >
-              <Icon className={`h-5 w-5 shrink-0 ${isActive ? 'text-primary-400' : ''}`} />
+              <Icon className={`h-5 w-5 shrink-0 ${isActive ? 'text-primary-500' : ''}`} />
               {!collapsed && <span>{label}</span>}
             </Link>
           );

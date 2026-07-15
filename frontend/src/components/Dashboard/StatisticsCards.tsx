@@ -28,10 +28,10 @@ export default function StatisticsCards({ stats = mockStats }: StatisticsCardsPr
                 <Icon className="h-5 w-5 text-primary-400" />
               </div>
               {stat.change && (
-                <span className="text-xs text-emerald-400">{stat.change}</span>
+                <span className="text-xs text-success-foreground">{stat.change}</span>
               )}
             </div>
-            <p className="mt-4 text-2xl font-bold text-white">{stat.value}</p>
+            <p className="mt-4 text-2xl font-bold text-foreground">{stat.value}</p>
             <p className="mt-1 text-sm text-muted-foreground">{stat.label}</p>
           </div>
         );

@@ -28,12 +28,37 @@
   --color-background: var(--bg-background);
   --color-foreground: var(--bg-foreground);
   --color-foreground-muted: var(--bg-foreground-muted);
+  --color-foreground-subtle: var(--bg-foreground-subtle);
+  
+  --color-primary-foreground: var(--bg-primary-foreground);
+
   --color-card: var(--bg-card);
+  --color-card-hover: var(--bg-card-hover);
+  
   --color-border: var(--bg-border);
   --color-border-muted: var(--bg-border-muted);
+  --color-border-focus: var(--bg-border-focus);
+
   --color-muted: var(--bg-muted);
   --color-muted-hover: var(--bg-muted-hover);
   --color-muted-foreground: var(--bg-muted-foreground);
+
+  /* Status Colors */
+  --color-success: var(--bg-success);
+  --color-success-foreground: var(--bg-success-foreground);
+  --color-success-border: var(--bg-success-border);
+  
+  --color-warning: var(--bg-warning);
+  --color-warning-foreground: var(--bg-warning-foreground);
+  --color-warning-border: var(--bg-warning-border);
+  
+  --color-error: var(--bg-error);
+  --color-error-foreground: var(--bg-error-foreground);
+  --color-error-border: var(--bg-error-border);
+  
+  --color-info: var(--bg-info);
+  --color-info-foreground: var(--bg-info-foreground);
+  --color-info-border: var(--bg-info-border);
 
   --shadow-elevation: var(--shadow-elevation);
   --shadow-primary: var(--shadow-primary);
@@ -41,26 +66,59 @@
   --color-auth-from: var(--bg-auth-from);
   --color-auth-via: var(--bg-auth-via);
   --color-auth-to: var(--bg-auth-to);
+  
+  --color-banner-from: var(--bg-banner-from);
+  --color-banner-via: var(--bg-banner-via);
+  --color-banner-to: var(--bg-banner-to);
 }
 
 :root {
   /* Default Dark Theme Mappings */
   --bg-background: var(--color-surface-950);
-  --bg-foreground: var(--color-surface-100);
+  --bg-foreground: var(--color-surface-50);
   --bg-foreground-muted: var(--color-surface-300);
+  --bg-foreground-subtle: var(--color-surface-400);
+
   --bg-card: var(--color-surface-900);
+  --bg-card-hover: var(--color-surface-800);
+  
   --bg-border: var(--color-surface-700);
   --bg-border-muted: var(--color-surface-800);
+  --bg-border-focus: var(--color-primary-500);
+
   --bg-muted: var(--color-surface-800);
   --bg-muted-hover: var(--color-surface-700);
   --bg-muted-foreground: var(--color-surface-400);
 
-  --shadow-elevation: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.3);
+  --bg-primary-foreground: #ffffff;
+
+  /* Status Colors Dark Mode */
+  --bg-success: rgba(5, 150, 105, 0.2); /* emerald-600 with opacity */
+  --bg-success-foreground: #34d399; /* emerald-400 */
+  --bg-success-border: rgba(5, 150, 105, 0.4);
+
+  --bg-warning: rgba(217, 119, 6, 0.2); /* amber-600 with opacity */
+  --bg-warning-foreground: #fbbf24; /* amber-400 */
+  --bg-warning-border: rgba(217, 119, 6, 0.4);
+
+  --bg-error: rgba(220, 38, 38, 0.2); /* red-600 with opacity */
+  --bg-error-foreground: #f87171; /* red-400 */
+  --bg-error-border: rgba(220, 38, 38, 0.4);
+
+  --bg-info: rgba(37, 99, 235, 0.2); /* blue-600 with opacity */
+  --bg-info-foreground: #60a5fa; /* blue-400 */
+  --bg-info-border: rgba(37, 99, 235, 0.4);
+
+  --shadow-elevation: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.5);
   --shadow-primary: 0 10px 15px -3px rgb(37 99 235 / 0.3);
 
   --bg-auth-from: var(--color-primary-950);
   --bg-auth-via: var(--color-surface-900);
   --bg-auth-to: var(--color-surface-950);
+  
+  --bg-banner-from: rgba(30, 58, 138, 0.4); /* primary-900/40 */
+  --bg-banner-via: rgba(30, 41, 59, 0.8); /* surface-800/80 */
+  --bg-banner-to: rgba(15, 23, 42, 0.8); /* surface-900/80 */
 }
 
 /* Light Theme Overrides */
@@ -68,26 +126,49 @@
   /* Carefully selected Light Theme Mappings to perfectly maintain contrast */
   --bg-background: var(--color-surface-50);
   --bg-foreground: var(--color-surface-950);
-  --bg-foreground-muted: var(--color-surface-700);
+  --bg-foreground-muted: var(--color-surface-600);
+  --bg-foreground-subtle: var(--color-surface-500);
+
   --bg-card: #ffffff;
-  --bg-border: var(--color-surface-200);
-  --bg-border-muted: var(--color-surface-100);
+  --bg-card-hover: var(--color-surface-50);
+
+  --bg-border: rgba(15, 23, 42, 0.08);
+  --bg-border-muted: rgba(15, 23, 42, 0.04);
+  --bg-border-focus: var(--color-primary-400);
+
   --bg-muted: var(--color-surface-100);
   --bg-muted-hover: var(--color-surface-200);
   --bg-muted-foreground: var(--color-surface-500);
 
-  --shadow-elevation: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05), 0 0 0 1px rgb(0 0 0 / 0.02);
-  --shadow-primary: 0 10px 15px -3px rgb(37 99 235 / 0.25);
+  --bg-primary-foreground: #ffffff;
+
+  /* Status Colors Light Mode */
+  --bg-success: #d1fae5; /* emerald-100 */
+  --bg-success-foreground: #047857; /* emerald-700 */
+  --bg-success-border: #a7f3d0; /* emerald-200 */
+
+  --bg-warning: #fef3c7; /* amber-100 */
+  --bg-warning-foreground: #b45309; /* amber-700 */
+  --bg-warning-border: #fde68a; /* amber-200 */
+
+  --bg-error: #fee2e2; /* red-100 */
+  --bg-error-foreground: #b91c1c; /* red-700 */
+  --bg-error-border: #fecaca; /* red-200 */
+
+  --bg-info: #dbeafe; /* blue-100 */
+  --bg-info-foreground: #1d4ed8; /* blue-700 */
+  --bg-info-border: #bfdbfe; /* blue-200 */
+
+  --shadow-elevation: 0 8px 30px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
+  --shadow-primary: 0 8px 20px -3px rgba(37, 99, 235, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.2);
 
   --bg-auth-from: var(--color-primary-100);
   --bg-auth-via: var(--color-surface-50);
   --bg-auth-to: #ffffff;
 
-  /* Specific component overrides for light theme contrast */
-  --color-emerald-400: var(--color-emerald-600); /* Darker success text */
-  --color-amber-400: var(--color-amber-600);   /* Darker warning text */
-  --color-red-400: var(--color-red-600);       /* Darker error text */
-  --color-blue-400: var(--color-blue-600);     /* Darker info text */
+  --bg-banner-from: rgba(219, 234, 254, 0.8); /* primary-100/80 */
+  --bg-banner-via: rgba(238, 242, 255, 0.6); /* indigo-50/60 */
+  --bg-banner-to: rgba(248, 250, 252, 0.9); /* slate-50/90 */
 }
 
 * {
@@ -130,4 +211,3 @@ body {
     transition-delay: 0s !important;
   }
 }
-

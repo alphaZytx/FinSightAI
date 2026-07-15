@@ -48,13 +48,16 @@ class ReportAgent(BaseAgent):
         if not sections:
             sections = [{"heading": "Executive Summary", "content": "No workspace evidence was provided for this report."}]
 
-        path = self.pdf_service.generate_simple_report(title, sections)
+        if not workspace_id:
+            workspace_id = "default"
+
+        path = self.pdf_service.generate_simple_report(title, sections, workspace_id)
         return AgentResult(
             agent_name=self.name,
             status="success",
             output={
                 "report_path": path,
-                "report_url": f"/reports-files/{Path(path).name}",
+                "report_url": f"/reports-files/{workspace_id}/{Path(path).name}",
                 "sections": sections,
                 "coverage": report_context,
             },

@@ -31,7 +31,7 @@ export default function ReportsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">Reports</h1>
+          <h1 className="text-2xl font-bold text-foreground">Reports</h1>
           <p className="mt-1 text-sm text-muted-foreground">Generate analyst-style PDF research reports</p>
         </div>
       </div>
@@ -52,14 +52,14 @@ export default function ReportsPage() {
             <button
               type="submit"
               disabled={busy || !activeWorkspaceId}
-              className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-primary-600 px-4 py-2.5 text-sm font-medium text-white shadow-lg shadow-primary hover:bg-primary-500 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+              className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-primary-600 px-4 py-2.5 text-sm font-medium text-primary-foreground shadow-lg shadow-primary hover:bg-primary-500 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
             >
               <FileOutput className="h-4 w-4" />
               {busy ? 'Compiling report…' : 'Generate PDF Report'}
             </button>
 
             {!activeWorkspaceId && <p className="text-xs text-muted-foreground text-center">Preparing workspace…</p>}
-            {error && <p className="text-sm text-red-400">{error}</p>}
+            {error && <p className="text-sm text-error-foreground">{error}</p>}
           </form>
         </Card>
 
@@ -71,14 +71,14 @@ export default function ReportsPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs font-semibold tracking-widest text-primary-400 uppercase">Report ready</p>
-                  <h3 className="mt-1 text-lg font-semibold text-white">Analyst Report</h3>
+                  <h3 className="mt-1 text-lg font-semibold text-foreground">Analyst Report</h3>
                 </div>
                 {result.report_url && (
                   <a
                     href={`${API_ROOT_URL}${result.report_url}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-2 rounded-lg bg-primary-600 px-4 py-2 text-sm font-medium text-white hover:bg-primary-500 transition-colors"
+                    className="inline-flex items-center gap-2 rounded-lg bg-primary-600 px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-500 transition-colors"
                   >
                     <Download className="h-4 w-4" />
                     Open PDF
@@ -90,15 +90,15 @@ export default function ReportsPage() {
               {result.coverage && (
                 <div className="grid grid-cols-3 gap-3">
                   <div className="rounded-lg border border-border bg-card p-3 text-center">
-                    <p className="text-lg font-bold text-white">{result.coverage.documents ?? 0}</p>
+                    <p className="text-lg font-bold text-foreground">{result.coverage.documents ?? 0}</p>
                     <p className="text-xs text-muted-foreground">Documents</p>
                   </div>
                   <div className="rounded-lg border border-border bg-card p-3 text-center">
-                    <p className="text-lg font-bold text-white">{result.coverage.metrics ?? 0}</p>
+                    <p className="text-lg font-bold text-foreground">{result.coverage.metrics ?? 0}</p>
                     <p className="text-xs text-muted-foreground">Metrics</p>
                   </div>
                   <div className="rounded-lg border border-border bg-card p-3 text-center">
-                    <p className="text-lg font-bold text-white">{result.coverage.red_flags ?? 0}</p>
+                    <p className="text-lg font-bold text-foreground">{result.coverage.red_flags ?? 0}</p>
                     <p className="text-xs text-muted-foreground">Risk Signals</p>
                   </div>
                 </div>

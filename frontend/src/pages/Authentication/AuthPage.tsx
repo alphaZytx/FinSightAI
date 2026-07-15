@@ -89,9 +89,9 @@ function AuthInput({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           required
-          className={`w-full rounded-xl border bg-muted py-3 pl-10 pr-10 text-sm text-foreground placeholder:text-muted-foreground transition-all focus:bg-muted focus:outline-none focus:ring-2 ${error
-              ? 'border-red-500/60 focus:border-red-500/60 focus:ring-red-500/20'
-              : 'border-border focus:border-primary-500/60 focus:ring-primary-500/20'
+          className={`w-full rounded-xl border bg-muted py-3 pl-10 pr-10 text-sm text-foreground placeholder:text-muted-foreground shadow-sm transition-all duration-200 focus:bg-muted focus:outline-none focus:ring-4 ${error
+              ? 'border-error-border focus:border-error-border focus:ring-error-border/20'
+              : 'border-border focus:border-primary-500 focus:ring-primary-500/10'
             }`}
         />
         {showToggle && (
@@ -105,7 +105,7 @@ function AuthInput({
           </button>
         )}
       </div>
-      {error && <p className="mt-1.5 text-xs text-red-400">{error}</p>}
+      {error && <p className="mt-1.5 text-xs text-error-foreground">{error}</p>}
     </div>
   );
 }
@@ -123,8 +123,8 @@ function SuccessCard({
 }) {
   return (
     <div className="rounded-2xl border border-border bg-card p-8 text-center backdrop-blur-sm">
-      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500/15">
-        <CheckCircle2 className="h-7 w-7 text-emerald-400" />
+      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-success">
+        <CheckCircle2 className="h-7 w-7 text-success-foreground" />
       </div>
       <h2 className="mt-5 text-xl font-semibold text-foreground">{title}</h2>
       <p className="mt-2 text-sm text-muted-foreground">{message}</p>
@@ -226,7 +226,7 @@ export default function AuthPage() {
           <div>
             <div className="flex items-center gap-3">
               <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary-600 shadow-lg shadow-primary">
-                <Brain className="h-6 w-6 text-white" />
+                <Brain className="h-6 w-6 text-primary-foreground" />
               </div>
               <p className="text-xs font-semibold tracking-widest text-primary-400 uppercase">
                 Enterprise Platform
@@ -281,7 +281,7 @@ export default function AuthPage() {
         {/* Mobile header */}
         <div className="mb-8 w-full max-w-[420px] text-center lg:hidden">
           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-primary-600">
-            <Brain className="h-6 w-6 text-white" />
+            <Brain className="h-6 w-6 text-primary-foreground" />
           </div>
           <h1 className="mt-4 text-lg font-bold leading-snug text-foreground">
             Multi Agent Financial Research System
@@ -333,7 +333,7 @@ export default function AuthPage() {
                     type="button"
                     onClick={() => switchMode('login')}
                     className={`flex-1 rounded-lg py-2.5 text-sm font-medium transition-all duration-200 ${mode === 'login'
-                        ? 'bg-primary-600 text-white shadow-sm'
+                        ? 'bg-primary-600 text-primary-foreground shadow-sm'
                         : 'text-muted-foreground hover:text-foreground-muted'
                       }`}
                   >
@@ -343,7 +343,7 @@ export default function AuthPage() {
                     type="button"
                     onClick={() => switchMode('register')}
                     className={`flex-1 rounded-lg py-2.5 text-sm font-medium transition-all duration-200 ${mode === 'register'
-                        ? 'bg-primary-600 text-white shadow-sm'
+                        ? 'bg-primary-600 text-primary-foreground shadow-sm'
                         : 'text-muted-foreground hover:text-foreground-muted'
                       }`}
                   >
@@ -426,7 +426,7 @@ export default function AuthPage() {
                         type="checkbox"
                         checked={rememberMe}
                         onChange={(e) => setRememberMe(e.target.checked)}
-                        className="h-4 w-4 rounded border-surface-600 accent-primary-500"
+                        className="h-4 w-4 rounded border-border accent-primary-500"
                       />
                       <span className="text-xs text-muted-foreground">Remember me</span>
                     </label>
@@ -449,7 +449,7 @@ export default function AuthPage() {
                     (mode !== 'forgot' && !password) ||
                     !email.trim()
                   }
-                  className="mt-2 w-full rounded-xl bg-primary-600 py-3 text-sm font-semibold text-white shadow-lg shadow-primary transition-all hover:bg-primary-500 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="mt-2 w-full rounded-xl bg-primary-600 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary transition-all hover:bg-primary-500 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {isLoading ? (
                     <span className="flex items-center justify-center gap-2">
@@ -465,7 +465,7 @@ export default function AuthPage() {
                 </button>
 
                 {apiError && (
-                  <p className="mt-3 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-2.5 text-sm text-red-400">
+                  <p className="mt-3 rounded-lg border border-error-border bg-error px-4 py-2.5 text-sm text-error-foreground">
                     {apiError}
                   </p>
                 )}

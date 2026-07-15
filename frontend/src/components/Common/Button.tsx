@@ -10,7 +10,7 @@ interface ButtonProps {
 }
 
 const variants = {
-  primary: 'bg-primary-600 hover:bg-primary-500 text-white shadow-lg shadow-primary',
+  primary: 'bg-gradient-to-b from-primary-500 to-primary-600 hover:from-primary-400 hover:to-primary-500 text-primary-foreground shadow-primary border border-primary-600/50',
   secondary: 'bg-muted hover:bg-muted-hover text-foreground border border-border',
   ghost: 'hover:bg-muted-hover text-foreground-muted hover:text-foreground',
 };
@@ -33,7 +33,7 @@ export default function Button({
     <button
       type="button"
       onClick={onClick}
-      className={`inline-flex items-center gap-2 rounded-lg font-medium transition-all duration-200 ${variants[variant]} ${sizes[size]} ${className}`}
+      className={`inline-flex items-center gap-2 rounded-lg font-medium transition-all duration-200 active:scale-[0.98] ${variants[variant]} ${sizes[size]} ${className}`}
     >
       {icon}
       {children}

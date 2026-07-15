@@ -3,11 +3,11 @@ import { Upload, Search, GitCompare, MessageSquare, FileOutput } from 'lucide-re
 import { Card } from '../Common';
 
 const actions = [
-  { label: 'Upload Financial Report', icon: Upload, path: '/workspace', color: 'text-blue-400 bg-blue-500/10' },
-  { label: 'Start New Research', icon: Search, path: '/workspace', color: 'text-emerald-400 bg-emerald-500/10' },
+  { label: 'Upload Financial Report', icon: Upload, path: '/workspace', color: 'text-info-foreground bg-info' },
+  { label: 'Start New Research', icon: Search, path: '/workspace', color: 'text-success-foreground bg-success' },
   { label: 'Compare Companies', icon: GitCompare, path: '/comparison', color: 'text-purple-400 bg-purple-500/10' },
   { label: 'Open AI Chat', icon: MessageSquare, path: '/chat', color: 'text-cyan-400 bg-cyan-500/10' },
-  { label: 'Generate Report', icon: FileOutput, path: '/reports', color: 'text-amber-400 bg-amber-500/10' },
+  { label: 'Generate Report', icon: FileOutput, path: '/reports', color: 'text-warning-foreground bg-warning' },
 ];
 
 export default function QuickActions() {
