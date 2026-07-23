@@ -1,4 +1,4 @@
-﻿from app.db.mongo import db
+from app.db.mongo import db
 
 
 async def create_indexes() -> None:
@@ -9,3 +9,4 @@ async def create_indexes() -> None:
     await db.red_flags.create_index([("workspace_id", 1), ("document_id", 1), ("severity", 1)])
     # Users — enforce unique emails at the database level
     await db.users.create_index("email", unique=True)
+    await db.notifications.create_index([("workspace_id", 1), ("timestamp", -1)])

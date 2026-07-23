@@ -7,6 +7,7 @@ from fastapi import HTTPException, UploadFile
 from app.core.config import settings
 from app.repositories.document_repository import DocumentRepository
 from app.orchestration.workflow import AgentWorkflow
+from app.services.notification_service import NotificationService
 
 MAX_UPLOAD_BYTES = 50 * 1024 * 1024
 
@@ -14,6 +15,7 @@ MAX_UPLOAD_BYTES = 50 * 1024 * 1024
 class DocumentService:
     def __init__(self) -> None:
         self.repo = DocumentRepository()
+        self.notification_service = NotificationService()
 
     async def upload_document(
         self,
@@ -57,6 +59,9 @@ class DocumentService:
         })
 
         if auto_ingest:
+            await self.notification_service.create_notification(
+                workspace_id, f"Started auto-ingestion for {company_name} - {fiscal_year}", "info"
+            )
             ingestion_result = await self.ingest_document(record["_id"], llm_provider=llm_provider)
             record["ingestion_result"] = ingestion_result
             record["status"] = "indexed" if ingestion_result.get("results", {}).get("document", {}).get("status") == "success" else "uploaded"
@@ -64,7 +69,21 @@ class DocumentService:
 
     async def ingest_document(self, document_id: str, llm_provider: str = "groq") -> dict:
         workflow = AgentWorkflow(llm_provider=llm_provider)
-        return await workflow.run_document_pipeline(document_id)
+        result = await workflow.run_document_pipeline(document_id)
+        
+        # Determine success from result
+        success = result.get("results", {}).get("document", {}).get("status") == "success"
+        doc = await self.repo.get_by_id(document_id)
+        if doc:
+            if success:
+                await self.notification_service.create_notification(
+                    doc["workspace_id"], f"Successfully indexed {doc.get('company_name')} - {doc.get('fiscal_year')}", "success"
+                )
+            else:
+                await self.notification_service.create_notification(
+                    doc["workspace_id"], f"Failed to index {doc.get('company_name')} - {doc.get('fiscal_year')}", "error"
+                )
+        return result
 
     async def list_documents(self, workspace_id: str) -> list[dict]:
         return await self.repo.find_by_workspace(workspace_id)

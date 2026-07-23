@@ -1,9 +1,10 @@
-﻿from collections import defaultdict
+from collections import defaultdict
 
 from app.agents.base_agent import AgentResult, BaseAgent
 from app.repositories.document_repository import DocumentRepository
 from app.repositories.metric_repository import MetricRepository
 from app.repositories.red_flag_repository import RedFlagRepository
+from app.services.notification_service import NotificationService
 
 
 SEVERITY_ORDER = {"critical": 4, "high": 3, "medium": 2, "low": 1}
@@ -18,6 +19,7 @@ class ComparisonAgent(BaseAgent):
         self.documents = DocumentRepository()
         self.metrics = MetricRepository()
         self.red_flags = RedFlagRepository()
+        self.notification_service = NotificationService()
 
     async def run(self, state: dict) -> AgentResult:
         workspace_id = state.get("workspace_id")
@@ -59,6 +61,11 @@ class ComparisonAgent(BaseAgent):
             if comparable_rows
             else "The selected filings are from distinct companies, but they do not yet share extracted metrics for the same fiscal period."
         )
+        
+        await self.notification_service.create_notification(
+            workspace_id, f"Peer benchmark comparison generated for {len(selected_documents)} companies.", "success"
+        )
+        
         return AgentResult(
             agent_name=self.name,
             status="success",

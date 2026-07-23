@@ -9,6 +9,7 @@ from app.repositories.metric_repository import MetricRepository
 from app.repositories.red_flag_repository import RedFlagRepository
 from app.services.llm_service import LLMService
 from app.services.pdf_report_service import PDFReportService
+from app.services.notification_service import NotificationService
 
 logger = logging.getLogger("finsight-ai")
 
@@ -36,6 +37,7 @@ class ReportAgent(BaseAgent):
         self.red_flags = RedFlagRepository()
         self.comparison = ComparisonAgent()
         self.llm = LLMService(provider=llm_provider)
+        self.notification_service = NotificationService()
 
     async def run(self, state: dict) -> AgentResult:
         title = state.get("title", "FinSightAI Analyst Report")
@@ -52,6 +54,12 @@ class ReportAgent(BaseAgent):
             workspace_id = "default"
 
         path = self.pdf_service.generate_simple_report(title, sections, workspace_id)
+        
+        if workspace_id != "default":
+            await self.notification_service.create_notification(
+                workspace_id, f"Analyst report '{title}' successfully generated.", "success"
+            )
+            
         return AgentResult(
             agent_name=self.name,
             status="success",

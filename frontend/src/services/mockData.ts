@@ -108,34 +108,5 @@ export const mockResearchSteps: ResearchStep[] = [
   { id: '6', label: 'Report Generated', completed: false, active: false },
 ];
 
-export const mockNotifications: Notification[] = [
-  {
-    id: '1',
-    message: 'Report generated successfully.',
-    type: 'success',
-    timestamp: new Date(Date.now() - 900000).toISOString(),
-    read: false,
-  },
-  {
-    id: '2',
-    message: 'New document uploaded.',
-    type: 'info',
-    timestamp: new Date(Date.now() - 3600000).toISOString(),
-    read: false,
-  },
-  {
-    id: '3',
-    message: 'AI analysis completed.',
-    type: 'success',
-    timestamp: new Date(Date.now() - 7200000).toISOString(),
-    read: true,
-  },
-  {
-    id: '4',
-    message: 'Red flags detected.',
-    type: 'warning',
-    timestamp: new Date(Date.now() - 14400000).toISOString(),
-    read: true,
-  },
-];
+
 

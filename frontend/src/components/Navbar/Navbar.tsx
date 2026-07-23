@@ -1,9 +1,13 @@
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Bell, Search, User, LogOut, Activity, AlertTriangle, Sun, Moon } from 'lucide-react';
 import { clearSession, getSession } from '../../utils/auth';
 import { getHealth } from '../../services/api/health';
 import { useTheme } from '../../context/ThemeContext';
+import { useWorkspaceStore } from '../../store/workspaceStore';
+import { listNotifications } from '../../services/api/notifications';
+import NotificationsPanel from '../Dashboard/NotificationsPanel';
 
 interface NavbarProps {
   sidebarCollapsed: boolean;
@@ -16,6 +20,29 @@ export default function Navbar({ sidebarCollapsed }: NavbarProps) {
   const isApiOnline = health.data?.status === 'ok';
   const { theme, toggleTheme } = useTheme();
   const isLight = theme === 'light';
+
+  const [showNotifications, setShowNotifications] = useState(false);
+  const notificationsRef = useRef<HTMLDivElement>(null);
+  const activeWorkspaceId = useWorkspaceStore((state) => state.activeWorkspaceId);
+
+  const { data: notifications = [] } = useQuery({
+    queryKey: ['notifications', activeWorkspaceId],
+    queryFn: () => listNotifications(activeWorkspaceId!),
+    enabled: Boolean(activeWorkspaceId),
+    refetchInterval: 10000,
+  });
+
+  const unreadCount = notifications.filter(n => !n.read).length;
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (notificationsRef.current && !notificationsRef.current.contains(event.target as Node)) {
+        setShowNotifications(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   function handleSignOut() {
     clearSession();
@@ -64,13 +91,24 @@ export default function Navbar({ sidebarCollapsed }: NavbarProps) {
           )}
         </button>
 
-        <button
-          type="button"
-          className="relative rounded-lg p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground-muted"
-        >
-          <Bell className="h-5 w-5" />
-          <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-primary-500" />
-        </button>
+        <div className="relative" ref={notificationsRef}>
+          <button
+            type="button"
+            onClick={() => setShowNotifications(!showNotifications)}
+            className="relative rounded-lg p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground-muted"
+          >
+            <Bell className="h-5 w-5" />
+            {unreadCount > 0 && (
+              <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-primary-500" />
+            )}
+          </button>
+
+          {showNotifications && (
+            <div className="absolute right-0 mt-2 w-80 sm:w-96 shadow-2xl rounded-xl z-50">
+              <NotificationsPanel />
+            </div>
+          )}
+        </div>
 
         <div className="flex items-center gap-2 rounded-lg border border-border bg-muted px-3 py-1.5">
           <div className={`flex h-8 w-8 items-center justify-center rounded-full ${isLight ? 'bg-primary-100' : 'bg-primary-500/20'}`}>
