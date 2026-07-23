@@ -1,9 +1,12 @@
 import { type FormEvent, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { FileOutput, Download, FileText } from 'lucide-react';
 import { Card } from '../../components/Common';
 import { generateReport, type ReportOutput } from '../../services/api/reports';
 import { API_ROOT_URL } from '../../services/api/client';
 import { useWorkspaceStore } from '../../store/workspaceStore';
+import { getWorkspaceAnalysis } from '../../services/api/workspaces';
+import ReportCharts from '../../components/Charts/ReportCharts';
 
 export default function ReportsPage() {
   const activeWorkspaceId = useWorkspaceStore((state) => state.activeWorkspaceId);
@@ -11,6 +14,13 @@ export default function ReportsPage() {
   const [result, setResult] = useState<ReportOutput | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Fetch workspace analysis for financial snapshot charts
+  const analysis = useQuery({
+    queryKey: ['report-workspace-analysis', activeWorkspaceId],
+    queryFn: () => getWorkspaceAnalysis(activeWorkspaceId),
+    enabled: Boolean(activeWorkspaceId),
+  });
 
   async function submit(event: FormEvent) {
     event.preventDefault();
@@ -129,6 +139,11 @@ export default function ReportsPage() {
           )}
         </Card>
       </div>
+
+      {/* Report Visualizations — shown after report is generated */}
+      {result && (
+        <ReportCharts result={result} analysis={analysis.data} />
+      )}
     </div>
   );
 }

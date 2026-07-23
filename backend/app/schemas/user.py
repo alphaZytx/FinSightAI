@@ -14,7 +14,9 @@ class UserInDB(BaseModel):
     id: str = Field(alias="_id")
     email: EmailStr
     full_name: str = ""
-    hashed_password: str = ""
+    hashed_password: str | None = None
+    auth_provider: str = "local"
+    google_id: str | None = None
     is_active: bool = True
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)

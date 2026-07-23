@@ -7,6 +7,7 @@ import { runComparison, type ComparisonOutput } from '../../services/api/compari
 import { getWorkspaceAnalysis } from '../../services/api/workspaces';
 import { useWorkspaceStore } from '../../store/workspaceStore';
 import type { AnalysisDocument } from '../../types';
+import ComparisonCharts from '../../components/Charts/ComparisonCharts';
 
 function defaultDocuments(documents: AnalysisDocument[]) {
   const companies = new Set<string>();
@@ -212,6 +213,9 @@ export default function ComparisonPage() {
               </div>
             </Card>
           </div>
+
+          {/* Visual Benchmark Charts */}
+          <ComparisonCharts result={result} />
 
           {/* Benchmark Insights */}
           {result.benchmark_insights.length > 0 && (

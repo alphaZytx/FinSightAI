@@ -20,10 +20,19 @@ class Settings(BaseSettings):
     GROQ_MODEL: str = "llama-3.3-70b-versatile"
     GOOGLE_API_KEY: str = "replace_me"
     GOOGLE_MODEL: str = "gemini-2.5-flash"
+    GOOGLE_CLIENT_ID: str = ""
     EMBEDDING_MODEL: str = "text-embedding-model"
     UPLOAD_DIR: str = "storage/raw"
     REPORT_DIR: str = "storage/reports"
     CORS_ORIGINS_STR: str = "http://localhost:5173,http://localhost:5174,http://localhost:5175,http://127.0.0.1:5173,http://127.0.0.1:5174,http://127.0.0.1:5175"
+    FRONTEND_URL: str = "http://localhost:5173"
+
+    # SMTP Settings for Emails
+    SMTP_HOST: str = "smtp.gmail.com"
+    SMTP_PORT: int = 587
+    SMTP_USER: str = ""
+    SMTP_PASSWORD: str = ""
+    SMTP_FROM: str = "noreply@finsight.ai"
 
     # Auth / JWT
     JWT_SECRET_KEY: str = "change_me_to_a_long_random_secret"

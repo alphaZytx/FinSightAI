@@ -1,9 +1,7 @@
 import type {
   ActivityItem,
   Agent,
-  ChartDataPoint,
   Company,
-  FinancialRatio,
   Notification,
   ResearchStep,
   StatCard,
@@ -141,42 +139,3 @@ export const mockNotifications: Notification[] = [
   },
 ];
 
-export const revenueData: ChartDataPoint[] = [
-  { period: 'Q1', value: 2.4 },
-  { period: 'Q2', value: 2.8 },
-  { period: 'Q3', value: 3.1 },
-  { period: 'Q4', value: 3.6 },
-  { period: 'Q1', value: 4.0 },
-];
-
-export const profitData: ChartDataPoint[] = [
-  { period: 'Q1', value: 0.4 },
-  { period: 'Q2', value: 0.5 },
-  { period: 'Q3', value: 0.6 },
-  { period: 'Q4', value: 0.7 },
-  { period: 'Q1', value: 0.85 },
-];
-
-export const debtEquityData = [
-  { period: 'Q1', debt: 1.2, equity: 2.8 },
-  { period: 'Q2', debt: 1.1, equity: 3.0 },
-  { period: 'Q3', debt: 1.0, equity: 3.2 },
-  { period: 'Q4', debt: 0.9, equity: 3.5 },
-  { period: 'Q1', debt: 0.8, equity: 3.8 },
-];
-
-export const cashFlowData: ChartDataPoint[] = [
-  { period: 'Q1', value: 0.6 },
-  { period: 'Q2', value: 0.75 },
-  { period: 'Q3', value: 0.9 },
-  { period: 'Q4', value: 1.1 },
-  { period: 'Q1', value: 1.3 },
-];
-
-export const financialRatios: FinancialRatio[] = [
-  { name: 'Current Ratio', value: 2.1, benchmark: 1.5 },
-  { name: 'Debt/Equity', value: 0.45, benchmark: 0.6 },
-  { name: 'ROE', value: 18.5, benchmark: 15 },
-  { name: 'Profit Margin', value: 21.2, benchmark: 18 },
-  { name: 'Quick Ratio', value: 1.6, benchmark: 1.0 },
-];

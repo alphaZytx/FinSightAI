@@ -6,6 +6,7 @@ import { useWorkspaceStore } from '../../store/workspaceStore';
 import { useClearWorkspaceData } from '../../hooks/useClearWorkspaceData';
 import type { AnalysisMetric, AnalysisRedFlag, ResearchStep } from '../../types';
 import ResearchProgress from '../../components/Dashboard/ResearchProgress';
+import AnalysisCharts from '../../components/Charts/AnalysisCharts';
 
 function formatMetric(value: number | null, unit?: string | null) {
   if (value === null || value === undefined) return 'Not reported';
@@ -289,12 +290,12 @@ function PipelineResults({ result }: { result: IngestResponse }) {
                 <div className="flex items-start gap-3">
                   <div className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${
                     flag.severity === 'critical' ? 'bg-error-border' :
-                    flag.severity === 'high' ? 'bg-orange-500/20' :
+                    flag.severity === 'high' ? 'bg-warning' :
                     flag.severity === 'medium' ? 'bg-warning' : 'bg-muted'
                   }`}>
                     <ShieldAlert className={`h-3.5 w-3.5 ${
                       flag.severity === 'critical' ? 'text-error-foreground' :
-                      flag.severity === 'high' ? 'text-orange-400' :
+                      flag.severity === 'high' ? 'text-warning-foreground' :
                       flag.severity === 'medium' ? 'text-warning-foreground' : 'text-muted-foreground'
                     }`} />
                   </div>
@@ -323,6 +324,9 @@ function PipelineResults({ result }: { result: IngestResponse }) {
           </div>
         </div>
       )}
+
+      {/* Visual Analysis Charts */}
+      <AnalysisCharts metrics={allMetrics} redFlags={allFlags} />
     </div>
   );
 }

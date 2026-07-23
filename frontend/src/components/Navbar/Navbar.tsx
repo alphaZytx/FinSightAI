@@ -15,6 +15,7 @@ export default function Navbar({ sidebarCollapsed }: NavbarProps) {
   const health = useQuery({ queryKey: ['health'], queryFn: getHealth, refetchInterval: 15000, retry: 1 });
   const isApiOnline = health.data?.status === 'ok';
   const { theme, toggleTheme } = useTheme();
+  const isLight = theme === 'light';
 
   function handleSignOut() {
     clearSession();
@@ -23,9 +24,9 @@ export default function Navbar({ sidebarCollapsed }: NavbarProps) {
 
   return (
     <header
-      className={`fixed right-0 top-0 z-20 flex h-16 items-center justify-between border-b border-border bg-card px-6 backdrop-blur-md transition-all duration-300 ${
+      className={`fixed right-0 top-0 z-20 flex h-16 items-center justify-between border-b px-6 backdrop-blur-md transition-all duration-300 ${
         sidebarCollapsed ? 'left-[72px]' : 'left-64'
-      }`}
+      } ${isLight ? 'border-border/70 bg-white/80' : 'border-border bg-card'}`}
     >
       <div className="relative max-w-md flex-1">
         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -72,8 +73,8 @@ export default function Navbar({ sidebarCollapsed }: NavbarProps) {
         </button>
 
         <div className="flex items-center gap-2 rounded-lg border border-border bg-muted px-3 py-1.5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-500/20">
-            <User className="h-4 w-4 text-primary-500" />
+          <div className={`flex h-8 w-8 items-center justify-center rounded-full ${isLight ? 'bg-primary-100' : 'bg-primary-500/20'}`}>
+            <User className={`h-4 w-4 ${isLight ? 'text-primary-600' : 'text-primary-500'}`} />
           </div>
           <div className="hidden sm:block">
             <p className="text-sm font-medium capitalize text-foreground">{session?.name ?? 'User'}</p>

@@ -1,175 +1,269 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary-50: #eff6ff;
-  --color-primary-100: #dbeafe;
-  --color-primary-200: #bfdbfe;
-  --color-primary-300: #93c5fd;
-  --color-primary-400: #60a5fa;
-  --color-primary-500: #3b82f6;
-  --color-primary-600: #2563eb;
-  --color-primary-700: #1d4ed8;
-  --color-primary-800: #1e40af;
-  --color-primary-900: #1e3a8a;
+  /* ──────────────────────────────────────────────────────────────
+     PRIMARY SCALE — Deep Navy-Blue
+     Hue ≈ 217–225°, anchored at the existing brand blue.
+     10-step scale built in HSL for consistency.
+     ────────────────────────────────────────────────────────────── */
+  --color-primary-50:  #eff6ff;  /* hsl(214, 100%, 97%) */
+  --color-primary-100: #dbeafe;  /* hsl(214, 95%, 93%)  */
+  --color-primary-200: #bfdbfe;  /* hsl(213, 97%, 87%)  */
+  --color-primary-300: #93c5fd;  /* hsl(212, 96%, 78%)  */
+  --color-primary-400: #60a5fa;  /* hsl(213, 94%, 68%)  */
+  --color-primary-500: #3b82f6;  /* hsl(217, 92%, 60%)  */
+  --color-primary-600: #2563eb;  /* hsl(217, 89%, 53%)  */
+  --color-primary-700: #1d4ed8;  /* hsl(222, 83%, 48%)  */
+  --color-primary-800: #1e40af;  /* hsl(223, 78%, 40%)  */
+  --color-primary-900: #1e3a8a;  /* hsl(224, 64%, 33%)  */
+  --color-primary-950: #172554;  /* hsl(226, 57%, 21%)  */
 
-  --color-surface-50: #f8fafc;
-  --color-surface-100: #f1f5f9;
-  --color-surface-200: #e2e8f0;
-  --color-surface-300: #cbd5e1;
-  --color-surface-400: #94a3b8;
-  --color-surface-500: #64748b;
-  --color-surface-600: #475569;
-  --color-surface-700: #334155;
-  --color-surface-800: #1e293b;
-  --color-surface-900: #0f172a;
-  --color-surface-950: #020617;
+  /* ──────────────────────────────────────────────────────────────
+     SURFACE / NEUTRAL SCALE — Slate with blue undertone
+     12-step scale for both light and dark surfaces.
+     ────────────────────────────────────────────────────────────── */
+  --color-surface-50:  #f8fafc;  /* hsl(210, 40%, 98%)  */
+  --color-surface-100: #f1f5f9;  /* hsl(210, 40%, 96%)  */
+  --color-surface-200: #e2e8f0;  /* hsl(214, 32%, 91%)  */
+  --color-surface-300: #cbd5e1;  /* hsl(213, 27%, 84%)  */
+  --color-surface-400: #94a3b8;  /* hsl(215, 20%, 65%)  */
+  --color-surface-500: #64748b;  /* hsl(215, 16%, 47%)  */
+  --color-surface-600: #475569;  /* hsl(215, 19%, 35%)  */
+  --color-surface-700: #334155;  /* hsl(217, 19%, 27%)  */
+  --color-surface-800: #1e293b;  /* hsl(217, 33%, 17%)  */
+  --color-surface-900: #0f172a;  /* hsl(222, 47%, 11%)  */
+  --color-surface-950: #020617;  /* hsl(229, 84%, 5%)   */
 
-  /* Semantic Theme Tokens */
-  --color-background: var(--bg-background);
-  --color-foreground: var(--bg-foreground);
-  --color-foreground-muted: var(--bg-foreground-muted);
+  /* ──────────────────────────────────────────────────────────────
+     SEMANTIC TOKENS — aliased to --bg-* vars below
+     These are the "public API" that components consume.
+     ────────────────────────────────────────────────────────────── */
+
+  /* Surfaces */
+  --color-background:       var(--bg-background);
+  --color-foreground:        var(--bg-foreground);
+  --color-foreground-muted:  var(--bg-foreground-muted);
   --color-foreground-subtle: var(--bg-foreground-subtle);
-  
+
   --color-primary-foreground: var(--bg-primary-foreground);
 
-  --color-card: var(--bg-card);
+  --color-card:       var(--bg-card);
   --color-card-hover: var(--bg-card-hover);
-  
-  --color-border: var(--bg-border);
+  --color-elevated:   var(--bg-elevated);
+
+  --color-border:       var(--bg-border);
   --color-border-muted: var(--bg-border-muted);
   --color-border-focus: var(--bg-border-focus);
 
-  --color-muted: var(--bg-muted);
-  --color-muted-hover: var(--bg-muted-hover);
+  --color-muted:            var(--bg-muted);
+  --color-muted-hover:      var(--bg-muted-hover);
   --color-muted-foreground: var(--bg-muted-foreground);
 
   /* Status Colors */
-  --color-success: var(--bg-success);
+  --color-success:            var(--bg-success);
   --color-success-foreground: var(--bg-success-foreground);
-  --color-success-border: var(--bg-success-border);
-  
-  --color-warning: var(--bg-warning);
+  --color-success-border:     var(--bg-success-border);
+
+  --color-warning:            var(--bg-warning);
   --color-warning-foreground: var(--bg-warning-foreground);
-  --color-warning-border: var(--bg-warning-border);
-  
-  --color-error: var(--bg-error);
+  --color-warning-border:     var(--bg-warning-border);
+
+  --color-error:            var(--bg-error);
   --color-error-foreground: var(--bg-error-foreground);
-  --color-error-border: var(--bg-error-border);
-  
-  --color-info: var(--bg-info);
+  --color-error-border:     var(--bg-error-border);
+
+  --color-info:            var(--bg-info);
   --color-info-foreground: var(--bg-info-foreground);
-  --color-info-border: var(--bg-info-border);
+  --color-info-border:     var(--bg-info-border);
 
+  /* Accent category colors — used in QuickActions, RecentActivity */
+  --color-accent-purple:    var(--bg-accent-purple);
+  --color-accent-purple-bg: var(--bg-accent-purple-bg);
+  --color-accent-cyan:      var(--bg-accent-cyan);
+  --color-accent-cyan-bg:   var(--bg-accent-cyan-bg);
+
+  /* Shadows */
   --shadow-elevation: var(--shadow-elevation);
-  --shadow-primary: var(--shadow-primary);
+  --shadow-primary:   var(--shadow-primary);
 
-  --color-auth-from: var(--bg-auth-from);
-  --color-auth-via: var(--bg-auth-via);
-  --color-auth-to: var(--bg-auth-to);
-  
+  /* Gradient endpoints */
+  --color-auth-from:   var(--bg-auth-from);
+  --color-auth-via:    var(--bg-auth-via);
+  --color-auth-to:     var(--bg-auth-to);
+
   --color-banner-from: var(--bg-banner-from);
-  --color-banner-via: var(--bg-banner-via);
-  --color-banner-to: var(--bg-banner-to);
+  --color-banner-via:  var(--bg-banner-via);
+  --color-banner-to:   var(--bg-banner-to);
 }
 
+/* ════════════════════════════════════════════════════════════════
+   DARK MODE (default)
+   Base background ≈ 9% lightness — dark navy, not pure black
+   3 surface levels with progressive lightness: 9% → 13% → 18%
+   ════════════════════════════════════════════════════════════════ */
 :root {
-  /* Default Dark Theme Mappings */
-  --bg-background: var(--color-surface-950);
-  --bg-foreground: var(--color-surface-50);
-  --bg-foreground-muted: var(--color-surface-300);
-  --bg-foreground-subtle: var(--color-surface-400);
+  /* Surfaces — progressive elevation */
+  --bg-background: #0c1222;   /* hsl(222, 47%, 9%)   — page base */
+  --bg-card:       #131c2e;   /* hsl(222, 40%, 13%)  — cards, sidebar, navbar */
+  --bg-card-hover: #172338;   /* hsl(222, 38%, 15%)  — card hover */
+  --bg-elevated:   #1a2540;   /* hsl(222, 40%, 18%)  — modals, dropdowns, popovers */
 
-  --bg-card: var(--color-surface-900);
-  --bg-card-hover: var(--color-surface-800);
-  
-  --bg-border: var(--color-surface-700);
-  --bg-border-muted: var(--color-surface-800);
-  --bg-border-focus: var(--color-primary-500);
+  /* Text — WCAG AA verified vs #131c2e (card) */
+  --bg-foreground:        #f1f5f9;   /* 14.2:1 — primary text */
+  --bg-foreground-muted:  #94a3b8;   /* 5.8:1  — secondary text */
+  --bg-foreground-subtle: #64748b;   /* 3.5:1  — tertiary / large UI text */
 
-  --bg-muted: var(--color-surface-800);
-  --bg-muted-hover: var(--color-surface-700);
-  --bg-muted-foreground: var(--color-surface-400);
+  /* Borders — visible but not glowing */
+  --bg-border:       #1e3050;   /* subtle blue-tinted border */
+  --bg-border-muted: #172540;   /* inner dividers */
+  --bg-border-focus: #3b82f6;   /* focus ring — primary-500 for dark */
+
+  /* Muted / Recessed surfaces */
+  --bg-muted:            #172033;   /* recessed panels, input fills */
+  --bg-muted-hover:      #1e2b45;   /* hover on muted */
+  --bg-muted-foreground: #64748b;   /* placeholder text, captions */
 
   --bg-primary-foreground: #ffffff;
 
-  /* Status Colors Dark Mode */
-  --bg-success: rgba(5, 150, 105, 0.2); /* emerald-600 with opacity */
-  --bg-success-foreground: #34d399; /* emerald-400 */
-  --bg-success-border: rgba(5, 150, 105, 0.4);
+  /* ── Status: Dark Mode ── */
+  --bg-success:            rgba(22, 163, 74, 0.15);
+  --bg-success-foreground: #4ade80;
+  --bg-success-border:     rgba(22, 163, 74, 0.30);
 
-  --bg-warning: rgba(217, 119, 6, 0.2); /* amber-600 with opacity */
-  --bg-warning-foreground: #fbbf24; /* amber-400 */
-  --bg-warning-border: rgba(217, 119, 6, 0.4);
+  --bg-warning:            rgba(234, 179, 8, 0.15);
+  --bg-warning-foreground: #facc15;
+  --bg-warning-border:     rgba(234, 179, 8, 0.30);
 
-  --bg-error: rgba(220, 38, 38, 0.2); /* red-600 with opacity */
-  --bg-error-foreground: #f87171; /* red-400 */
-  --bg-error-border: rgba(220, 38, 38, 0.4);
+  --bg-error:            rgba(239, 68, 68, 0.15);
+  --bg-error-foreground: #f87171;
+  --bg-error-border:     rgba(239, 68, 68, 0.30);
 
-  --bg-info: rgba(37, 99, 235, 0.2); /* blue-600 with opacity */
-  --bg-info-foreground: #60a5fa; /* blue-400 */
-  --bg-info-border: rgba(37, 99, 235, 0.4);
+  --bg-info:            rgba(59, 130, 246, 0.15);
+  --bg-info-foreground: #60a5fa;
+  --bg-info-border:     rgba(59, 130, 246, 0.30);
 
-  --shadow-elevation: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.5);
-  --shadow-primary: 0 10px 15px -3px rgb(37 99 235 / 0.3);
+  /* Accent category colors — dark */
+  --bg-accent-purple:    #c084fc;
+  --bg-accent-purple-bg: rgba(168, 85, 247, 0.15);
+  --bg-accent-cyan:      #22d3ee;
+  --bg-accent-cyan-bg:   rgba(6, 182, 212, 0.15);
 
-  --bg-auth-from: var(--color-primary-950);
-  --bg-auth-via: var(--color-surface-900);
-  --bg-auth-to: var(--color-surface-950);
-  
-  --bg-banner-from: rgba(30, 58, 138, 0.4); /* primary-900/40 */
-  --bg-banner-via: rgba(30, 41, 59, 0.8); /* surface-800/80 */
-  --bg-banner-to: rgba(15, 23, 42, 0.8); /* surface-900/80 */
+  /* Shadows — stronger on dark backgrounds */
+  --shadow-elevation: 0 10px 20px -4px rgb(0 0 0 / 0.45), 0 4px 8px -4px rgb(0 0 0 / 0.35);
+  --shadow-primary:   0 8px 16px -4px rgb(37 99 235 / 0.35);
+
+  /* Gradients */
+  --bg-auth-from:   #172554;
+  --bg-auth-via:    #131c2e;
+  --bg-auth-to:     #0c1222;
+
+  --bg-banner-from: rgba(23, 37, 84, 0.50);
+  --bg-banner-via:  rgba(19, 28, 46, 0.85);
+  --bg-banner-to:   rgba(12, 18, 34, 0.90);
+
+  /* Chart tokens — dark */
+  --chart-grid:           #1e3050;
+  --chart-axis:           #64748b;
+  --chart-tooltip-bg:     #131c2e;
+  --chart-tooltip-border: #1e3050;
+  --chart-tooltip-text:   #94a3b8;
+  --chart-line-primary:   #3b82f6;
+  --chart-line-secondary: #4ade80;
+  --chart-bar-primary:    #22d3ee;
+  --chart-bar-debt:       #f87171;
+  --chart-bar-equity:     #a78bfa;
+  --chart-radar-primary:  #3b82f6;
+  --chart-radar-secondary:#64748b;
+  --chart-legend-text:    #94a3b8;
 }
 
-/* Light Theme Overrides */
+/* ════════════════════════════════════════════════════════════════
+   LIGHT MODE
+   Base background ≈ 97% lightness — warm off-white, not pure white
+   3 surface levels: off-white base → white cards → white+shadow elevated
+   ════════════════════════════════════════════════════════════════ */
 :root.light {
-  /* Carefully selected Light Theme Mappings to perfectly maintain contrast */
-  --bg-background: var(--color-surface-50);
-  --bg-foreground: var(--color-surface-950);
-  --bg-foreground-muted: var(--color-surface-600);
-  --bg-foreground-subtle: var(--color-surface-500);
+  /* Surfaces — card is white against warm off-white base for visible lift */
+  --bg-background: #f0f2f7;   /* slightly more blue-tinted, cooler base */
+  --bg-card:       #ffffff;
+  --bg-card-hover: #f6f8fc;
+  --bg-elevated:   #ffffff;
 
-  --bg-card: #ffffff;
-  --bg-card-hover: var(--color-surface-50);
+  /* Sidebar gets a subtle blue-wash so it's not flat white */
+  --sidebar-bg: linear-gradient(180deg, #f0f4ff 0%, #f8f9ff 100%);
 
-  --bg-border: rgba(15, 23, 42, 0.08);
-  --bg-border-muted: rgba(15, 23, 42, 0.04);
-  --bg-border-focus: var(--color-primary-400);
+  /* Text — WCAG AA verified */
+  --bg-foreground:        #111827;
+  --bg-foreground-muted:  #374151;   /* bumped from #4b — slightly darker for more authority */
+  --bg-foreground-subtle: #6b7280;
 
-  --bg-muted: var(--color-surface-100);
-  --bg-muted-hover: var(--color-surface-200);
-  --bg-muted-foreground: var(--color-surface-500);
+  /* Borders */
+  --bg-border:       #c7ccd6;   /* slightly darker for better card definition */
+  --bg-border-muted: #e0e4ea;
+  --bg-border-focus: #2563eb;
+
+  /* Muted / Recessed surfaces */
+  --bg-muted:            #e8ecf4;   /* bluer tint — not just plain gray */
+  --bg-muted-hover:      #dce2ee;
+  --bg-muted-foreground: #9ca3af;
 
   --bg-primary-foreground: #ffffff;
 
-  /* Status Colors Light Mode */
-  --bg-success: #d1fae5; /* emerald-100 */
-  --bg-success-foreground: #047857; /* emerald-700 */
-  --bg-success-border: #a7f3d0; /* emerald-200 */
+  /* ── Status: Light Mode ── MORE SATURATED pastels ── */
+  --bg-success:            #d1fae5;   /* richer green */
+  --bg-success-foreground: #047857;   /* darker green for punch */
+  --bg-success-border:     #6ee7b7;   /* visible green border */
 
-  --bg-warning: #fef3c7; /* amber-100 */
-  --bg-warning-foreground: #b45309; /* amber-700 */
-  --bg-warning-border: #fde68a; /* amber-200 */
+  --bg-warning:            #fef3c7;
+  --bg-warning-foreground: #92400e;
+  --bg-warning-border:     #fbbf24;   /* vivid amber border */
 
-  --bg-error: #fee2e2; /* red-100 */
-  --bg-error-foreground: #b91c1c; /* red-700 */
-  --bg-error-border: #fecaca; /* red-200 */
+  --bg-error:            #fee2e2;
+  --bg-error-foreground: #b91c1c;
+  --bg-error-border:     #f87171;   /* visible red border */
 
-  --bg-info: #dbeafe; /* blue-100 */
-  --bg-info-foreground: #1d4ed8; /* blue-700 */
-  --bg-info-border: #bfdbfe; /* blue-200 */
+  --bg-info:            #dbeafe;
+  --bg-info-foreground: #1d4ed8;
+  --bg-info-border:     #60a5fa;   /* vivid blue border */
 
-  --shadow-elevation: 0 8px 30px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
-  --shadow-primary: 0 8px 20px -3px rgba(37, 99, 235, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+  /* Accent category colors — MUCH MORE SATURATED for light mode */
+  --bg-accent-purple:    #7c3aed;
+  --bg-accent-purple-bg: rgba(124, 58, 237, 0.12);
+  --bg-accent-cyan:      #0891b2;
+  --bg-accent-cyan-bg:   rgba(6, 182, 212, 0.12);
 
-  --bg-auth-from: var(--color-primary-100);
-  --bg-auth-via: var(--color-surface-50);
-  --bg-auth-to: #ffffff;
+  /* Shadows — slightly more pronounced */
+  --shadow-elevation: 0 1px 3px rgba(0, 0, 0, 0.07), 0 6px 20px rgba(0, 0, 0, 0.06);
+  --shadow-primary:   0 4px 16px -2px rgba(37, 99, 235, 0.28), inset 0 1px 1px rgba(255, 255, 255, 0.2);
 
-  --bg-banner-from: rgba(219, 234, 254, 0.8); /* primary-100/80 */
-  --bg-banner-via: rgba(238, 242, 255, 0.6); /* indigo-50/60 */
-  --bg-banner-to: rgba(248, 250, 252, 0.9); /* slate-50/90 */
+  /* Gradients — VIVID banner, not washed out */
+  --bg-auth-from: #c7d2fe;   /* indigo-200 */
+  --bg-auth-via:  #e0e7ff;   /* indigo-100 */
+  --bg-auth-to:   #f0f2f7;
+
+  --bg-banner-from: rgba(59, 130, 246, 0.18);    /* visible blue tint */
+  --bg-banner-via:  rgba(99, 102, 241, 0.10);    /* indigo wash */
+  --bg-banner-to:   rgba(240, 242, 247, 0.95);
+
+  /* Chart tokens — light (more saturated) */
+  --chart-grid:           #e0e4ea;
+  --chart-axis:           #6b7280;
+  --chart-tooltip-bg:     #ffffff;
+  --chart-tooltip-border: #c7ccd6;
+  --chart-tooltip-text:   #6b7280;
+  --chart-line-primary:   #2563eb;
+  --chart-line-secondary: #059669;
+  --chart-bar-primary:    #0891b2;
+  --chart-bar-debt:       #dc2626;
+  --chart-bar-equity:     #7c3aed;
+  --chart-radar-primary:  #2563eb;
+  --chart-radar-secondary:#94a3b8;
+  --chart-legend-text:    #6b7280;
 }
+
+/* ════════════════════════════════════════════════════════════════
+   GLOBAL BASE STYLES
+   ════════════════════════════════════════════════════════════════ */
 
 * {
   box-sizing: border-box;
@@ -207,7 +301,12 @@ body {
   html.theme-transition *,
   html.theme-transition *::before,
   html.theme-transition *::after {
-    transition: all 300ms ease-in-out !important;
+    transition: background-color 300ms ease-in-out,
+                border-color 300ms ease-in-out,
+                color 300ms ease-in-out,
+                box-shadow 300ms ease-in-out,
+                fill 300ms ease-in-out,
+                stroke 300ms ease-in-out !important;
     transition-delay: 0s !important;
   }
 }

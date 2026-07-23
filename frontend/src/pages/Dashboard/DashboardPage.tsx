@@ -64,7 +64,7 @@ export default function DashboardPage() {
           {analysis.data && <WorkspaceInsights analysis={analysis.data} />}
 
           <RecentActivity />
-          <FinancialCharts />
+          <FinancialCharts analysis={analysis.data} />
         </div>
 
         <div className="space-y-6">

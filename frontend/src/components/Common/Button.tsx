@@ -10,9 +10,9 @@ interface ButtonProps {
 }
 
 const variants = {
-  primary: 'bg-gradient-to-b from-primary-500 to-primary-600 hover:from-primary-400 hover:to-primary-500 text-primary-foreground shadow-primary border border-primary-600/50',
-  secondary: 'bg-muted hover:bg-muted-hover text-foreground border border-border',
-  ghost: 'hover:bg-muted-hover text-foreground-muted hover:text-foreground',
+  primary: 'bg-gradient-to-b from-primary-600 to-primary-700 hover:from-primary-500 hover:to-primary-600 text-primary-foreground shadow-primary border border-primary-700/50 focus-visible:ring-2 focus-visible:ring-primary-500/40 focus-visible:ring-offset-1 focus-visible:ring-offset-background',
+  secondary: 'bg-muted hover:bg-muted-hover text-foreground border border-border focus-visible:ring-2 focus-visible:ring-primary-500/30 focus-visible:ring-offset-1 focus-visible:ring-offset-background',
+  ghost: 'hover:bg-muted-hover text-foreground-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-primary-500/30',
 };
 
 const sizes = {

@@ -12,6 +12,8 @@ from datetime import datetime, timedelta, timezone
 from fastapi import HTTPException, status
 from jose import JWTError, jwt
 from passlib.context import CryptContext
+from google.oauth2 import id_token
+from google.auth.transport import requests
 
 from app.core.config import settings
 from app.repositories.user_repository import user_repository
@@ -128,3 +130,52 @@ async def get_current_user(token: str) -> UserPublic:
             headers={"WWW-Authenticate": "Bearer"},
         )
     return _to_public(user)
+
+
+async def google_login_user(token: str) -> TokenResponse:
+    try:
+        idinfo = id_token.verify_oauth2_token(
+            token, requests.Request(), settings.GOOGLE_CLIENT_ID if settings.GOOGLE_CLIENT_ID else None
+        )
+        email = idinfo.get("email")
+        full_name = idinfo.get("name", "")
+        google_id = idinfo.get("sub")
+        if not email:
+            raise ValueError("Email missing from Google token")
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=f"Invalid Google token: {str(e)}",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    user = await user_repository.find_by_email(email)
+    if not user:
+        user = await user_repository.create(
+            email=email,
+            full_name=full_name,
+            auth_provider="google",
+            google_id=google_id
+        )
+    elif user.auth_provider != "google" and not user.google_id:
+        # Link Google account to existing user
+        # In a real app we might update the DB here
+        pass
+
+    access_token = create_access_token(user)
+    return TokenResponse(access_token=access_token, user=_to_public(user))
+
+
+def generate_password_reset_token(email: str) -> str:
+    expires_delta = timedelta(hours=1)
+    return _make_token({"sub": email, "type": "reset"}, expires_delta)
+
+
+def verify_password_reset_token(token: str) -> str | None:
+    try:
+        payload = jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=[settings.JWT_ALGORITHM])
+        if payload.get("type") != "reset":
+            return None
+        return payload.get("sub")
+    except JWTError:
+        return None

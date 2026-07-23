@@ -1,0 +1,46 @@
+Here are the easiest ways to start the project:
+
+1. Let Me Handle It (The Easiest Way)
+Just tell me in chat: "start the project", and I will run the frontend and backend servers in the background for you.
+
+2. Start it Manually in Your Terminal
+If you prefer to run it yourself so you can see the terminal outputs, you will need to open two separate terminal windows inside your project directory (/Users/alokchandra/Desktop/FinSightAI copy 2):
+
+Terminal 1 (Backend):
+
+bash
+cd backend
+source .venv/bin/activate
+uvicorn app.main:app --reload --port 8000
+Terminal 2 (Frontend):
+
+bash
+cd frontend
+npm run dev
+(Note: This assumes your local MongoDB database is already running in the background, which it currently is on your system!)
+
+3. Using Docker (If Installed)
+If you install Docker on your Mac in the future, the project is already set up for it. You would just run this single command in the root folder:
+
+bash
+make dev
+# or
+docker compose up --build
+
+
+#############################################
+
+The simplest process to stop this project depends on how you originally started it:
+
+1. If you asked me to start it
+Simply tell me in the chat: "stop the project" or "kill the servers", and I will automatically handle shutting everything down in the background (which is what I did in the previous step!).
+
+2. If you started it in your own terminal windows
+Frontend / Backend: If you ran commands like npm run dev or uvicorn app.main:app in your own terminal, go to that specific terminal window and press Ctrl + C. This sends an interrupt signal to stop the process immediately.
+Database (MongoDB): If you want to stop the local MongoDB database, you can run pkill -x mongod in your terminal.
+3. If you started it using Docker
+If you ever run the project using make dev or docker compose up, you can stop everything cleanly by running this command in the project root:
+
+bash
+docker compose down
+That's it! Usually, just pressing Ctrl + C in the terminal where the server is running is all you need to do.

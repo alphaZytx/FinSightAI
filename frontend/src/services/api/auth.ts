@@ -67,3 +67,15 @@ export async function apiGetMe(token: string): Promise<AuthUser> {
   if (!response.ok) throw new Error('Failed to fetch user profile');
   return response.json() as Promise<AuthUser>;
 }
+
+export async function apiGoogleLogin(token: string): Promise<TokenResponse> {
+  return authFetch<TokenResponse>('/auth/google', { token });
+}
+
+export async function apiForgotPassword(email: string): Promise<{ message: string }> {
+  return authFetch<{ message: string }>('/auth/forgot-password', { email });
+}
+
+export async function apiResetPassword(token: string, new_password: string): Promise<{ message: string }> {
+  return authFetch<{ message: string }>('/auth/reset-password', { token, new_password });
+}

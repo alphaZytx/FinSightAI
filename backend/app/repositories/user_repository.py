@@ -29,12 +29,14 @@ class UserRepository(BaseRepository):
     # Writes                                                               #
     # ------------------------------------------------------------------ #
 
-    async def create(self, email: str, full_name: str, hashed_password: str) -> UserInDB:
+    async def create(self, email: str, full_name: str, hashed_password: str | None = None, auth_provider: str = "local", google_id: str | None = None) -> UserInDB:
         now = datetime.now(timezone.utc)
         doc = {
             "email": email.lower().strip(),
             "full_name": full_name.strip(),
             "hashed_password": hashed_password,
+            "auth_provider": auth_provider,
+            "google_id": google_id,
             "is_active": True,
             "created_at": now,
             "updated_at": now,

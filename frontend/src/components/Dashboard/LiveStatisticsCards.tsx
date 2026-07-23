@@ -1,12 +1,23 @@
 import { FileText, BarChart3, ShieldAlert, FileCheck2 } from 'lucide-react';
 import type { WorkspaceAnalysis } from '../../types';
 import { mockStats } from '../../services/mockData';
+import { useTheme } from '../../context/ThemeContext';
 
 interface LiveStatisticsCardsProps {
   analysis?: WorkspaceAnalysis;
 }
 
+const cardAccents = [
+  { border: 'border-l-blue-500',    iconBg: 'bg-blue-100',    iconBgDark: 'bg-primary-500/10',   iconColor: 'text-blue-600',    iconColorDark: 'text-primary-400' },
+  { border: 'border-l-emerald-500', iconBg: 'bg-emerald-100', iconBgDark: 'bg-primary-500/10',   iconColor: 'text-emerald-600', iconColorDark: 'text-primary-400' },
+  { border: 'border-l-amber-500',   iconBg: 'bg-amber-100',   iconBgDark: 'bg-primary-500/10',   iconColor: 'text-amber-600',   iconColorDark: 'text-primary-400' },
+  { border: 'border-l-violet-500',  iconBg: 'bg-violet-100',  iconBgDark: 'bg-primary-500/10',   iconColor: 'text-violet-600',  iconColorDark: 'text-primary-400' },
+];
+
 export function LiveStatisticsCards({ analysis }: LiveStatisticsCardsProps) {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
+
   const stats = analysis
     ? [
         { label: 'Indexed Documents', value: analysis.summary.indexed_document_count, change: `${analysis.summary.company_count} companies`, icon: FileText },
@@ -23,16 +34,21 @@ export function LiveStatisticsCards({ analysis }: LiveStatisticsCardsProps) {
 
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-      {stats.map((stat) => {
+      {stats.map((stat, index) => {
         const Icon = stat.icon;
+        const accent = cardAccents[index % cardAccents.length];
         return (
           <div
             key={stat.label}
-            className="group rounded-xl border border-border bg-muted p-5 transition-all hover:border-primary-500/30 hover:bg-muted"
+            className={`group rounded-xl border bg-card p-5 transition-all hover:border-primary-500/30 ${
+              isLight
+                ? `border-border border-l-4 ${accent.border}`
+                : 'border-border'
+            }`}
           >
             <div className="flex items-start justify-between">
-              <div className="rounded-lg bg-primary-500/10 p-2.5">
-                <Icon className="h-5 w-5 text-primary-400" />
+              <div className={`rounded-lg p-2.5 ${isLight ? accent.iconBg : accent.iconBgDark}`}>
+                <Icon className={`h-5 w-5 ${isLight ? accent.iconColor : accent.iconColorDark}`} />
               </div>
               {stat.change && (
                 <span className="text-xs text-success-foreground">{stat.change}</span>

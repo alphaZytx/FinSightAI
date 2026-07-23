@@ -20,12 +20,16 @@ function WorkspaceInitializer() {
   return null;
 }
 
+import { GoogleOAuthProvider } from '@react-oauth/google';
+
 function App() {
+  const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || 'dummy-client-id';
+  
   return (
-    <>
+    <GoogleOAuthProvider clientId={clientId}>
       <WorkspaceInitializer />
       <RouterProvider router={router} />
-    </>
+    </GoogleOAuthProvider>
   );
 }
 

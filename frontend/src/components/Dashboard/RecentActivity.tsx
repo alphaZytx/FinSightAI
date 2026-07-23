@@ -3,12 +3,29 @@ import type { ActivityItem } from '../../types';
 import { mockActivities } from '../../services/mockData';
 import { formatRelativeTime } from '../../utils/formatters';
 import { Card } from '../Common';
+import { useTheme } from '../../context/ThemeContext';
 
 const typeConfig = {
-  upload: { icon: Upload, color: 'text-info-foreground bg-info' },
-  analysis: { icon: Brain, color: 'text-purple-400 bg-purple-500/10' },
-  report: { icon: FileOutput, color: 'text-success-foreground bg-success' },
-  chat: { icon: MessageSquare, color: 'text-cyan-400 bg-cyan-500/10' },
+  upload: {
+    icon: Upload,
+    lightColor: 'text-blue-600 bg-blue-100',
+    darkColor: 'text-info-foreground bg-info',
+  },
+  analysis: {
+    icon: Brain,
+    lightColor: 'text-violet-600 bg-violet-100',
+    darkColor: 'text-accent-purple bg-accent-purple-bg',
+  },
+  report: {
+    icon: FileOutput,
+    lightColor: 'text-emerald-600 bg-emerald-100',
+    darkColor: 'text-success-foreground bg-success',
+  },
+  chat: {
+    icon: MessageSquare,
+    lightColor: 'text-cyan-600 bg-cyan-100',
+    darkColor: 'text-accent-cyan bg-accent-cyan-bg',
+  },
 };
 
 interface RecentActivityProps {
@@ -16,6 +33,9 @@ interface RecentActivityProps {
 }
 
 export default function RecentActivity({ activities = mockActivities }: RecentActivityProps) {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
+
   return (
     <Card title="Recent Activity" subtitle="Latest workspace events">
       <div className="space-y-3">
@@ -27,7 +47,7 @@ export default function RecentActivity({ activities = mockActivities }: RecentAc
               key={activity.id}
               className="flex items-start gap-3 rounded-lg border border-border bg-card p-3 transition-colors hover:bg-muted"
             >
-              <div className={`mt-0.5 rounded-lg p-2 ${config.color}`}>
+              <div className={`mt-0.5 rounded-lg p-2 ${isLight ? config.lightColor : config.darkColor}`}>
                 <Icon className="h-4 w-4" />
               </div>
               <div className="min-w-0 flex-1">

@@ -7,6 +7,7 @@ import ReportsPage from '../pages/Reports/ReportsPage';
 import ChatPage from '../pages/Chat/ChatPage';
 import SettingsPage from '../pages/Settings/SettingsPage';
 import AuthPage from '../pages/Authentication/AuthPage';
+import ResetPasswordPage from '../pages/Authentication/ResetPasswordPage';
 import { ProtectedRoute, GuestRoute } from './guards';
 
 export const router = createBrowserRouter([
@@ -15,6 +16,14 @@ export const router = createBrowserRouter([
     element: (
       <GuestRoute>
         <AuthPage />
+      </GuestRoute>
+    ),
+  },
+  {
+    path: '/reset-password',
+    element: (
+      <GuestRoute>
+        <ResetPasswordPage />
       </GuestRoute>
     ),
   },
